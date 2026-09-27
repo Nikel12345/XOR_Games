@@ -1,0 +1,641 @@
+{
+    "materials": [
+        {
+            "name": "ground",
+            "shaders": [
+                {
+                    "name": "Lit",
+                    "params_type": "Opaque",
+                    "params": {
+                        "baseColor": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "emissive": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "emissiveStrength": 1.0,
+                        "metallic": 0.0,
+                        "roughness": 1.0,
+                        "heightScale": 0.0,
+                        "pomBias": 0.0
+                    }
+                },
+                {
+                    "name": "ShadowCaster"
+                }
+            ],
+            "textures": [
+                {
+                    "role": "Albedo",
+                    "textures": [
+                        "new_car_ground"
+                    ]
+                },
+                {
+                    "role": "Normal",
+                    "textures": [
+                        "norm"
+                    ]
+                },
+                {
+                    "role": "ORM",
+                    "textures": [
+                        "default_orm"
+                    ]
+                },
+                {
+                    "role": "Emissive",
+                    "textures": [
+                        "default_emissive"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "skybox",
+            "shaders": [
+                {
+                    "name": "Skybox"
+                }
+            ],
+            "textures": []
+        },
+        {
+            "name": "debug_collider",
+            "shaders": [
+                {
+                    "name": "Wireframe"
+                }
+            ],
+            "textures": []
+        },
+        {
+            "name": "car",
+            "shaders": [
+                {
+                    "name": "Lit",
+                    "params_type": "Opaque",
+                    "params": {
+                        "baseColor": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "emissive": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "emissiveStrength": 1.0,
+                        "metallic": 0.0,
+                        "roughness": 1.0,
+                        "heightScale": 0.0,
+                        "pomBias": 0.0
+                    }
+                },
+                {
+                    "name": "ShadowCaster"
+                }
+            ],
+            "textures": [
+                {
+                    "role": "Albedo",
+                    "textures": [
+                        "new_car"
+                    ]
+                },
+                {
+                    "role": "Normal",
+                    "textures": [
+                        "norm"
+                    ]
+                },
+                {
+                    "role": "ORM",
+                    "textures": [
+                        "default_orm"
+                    ]
+                },
+                {
+                    "role": "Emissive",
+                    "textures": [
+                        "default_emissive"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "transparent",
+            "shaders": [
+                {
+                    "name": "LitTransparent",
+                    "params_type": "Transparent",
+                    "params": {
+                        "alpha": 0.3499999940395355
+                    }
+                }
+            ],
+            "textures": [
+                {
+                    "role": "Albedo",
+                    "textures": [
+                        "new_car_glass"
+                    ]
+                },
+                {
+                    "role": "Normal",
+                    "textures": [
+                        "norm"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "car2",
+            "shaders": [
+                {
+                    "name": "Lit",
+                    "params_type": "Opaque",
+                    "params": {
+                        "baseColor": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "emissive": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "emissiveStrength": 1.0,
+                        "metallic": 0.0,
+                        "roughness": 1.0,
+                        "heightScale": 0.0,
+                        "pomBias": 0.0
+                    }
+                },
+                {
+                    "name": "ShadowCaster"
+                }
+            ],
+            "textures": [
+                {
+                    "role": "Albedo",
+                    "textures": [
+                        "new_car"
+                    ]
+                },
+                {
+                    "role": "Normal",
+                    "textures": [
+                        "norm"
+                    ]
+                },
+                {
+                    "role": "ORM",
+                    "textures": [
+                        "default_orm"
+                    ]
+                },
+                {
+                    "role": "Emissive",
+                    "textures": [
+                        "default_emissive"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "m_orange",
+            "shaders": [
+                {
+                    "name": "LitColor",
+                    "params_type": "Opaque",
+                    "params": {
+                        "baseColor": [
+                            1.0,
+                            0.44999998807907104,
+                            0.10000000149011612,
+                            1.0
+                        ],
+                        "emissive": [
+                            1.0,
+                            0.8549020290374756,
+                            0.0
+                        ],
+                        "emissiveStrength": 0.0,
+                        "metallic": 0.22599999606609344,
+                        "roughness": 0.0,
+                        "heightScale": 0.0,
+                        "pomBias": 0.0
+                    }
+                },
+                {
+                    "name": "ShadowCaster"
+                }
+            ],
+            "textures": []
+        },
+        {
+            "name": "brick",
+            "shaders": [
+                {
+                    "name": "Lit",
+                    "params_type": "Opaque",
+                    "params": {
+                        "baseColor": [
+                            0.8039219975471497,
+                            0.8039219975471497,
+                            0.8039219975471497,
+                            1.0
+                        ],
+                        "emissive": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "emissiveStrength": 1.0,
+                        "metallic": 1.0,
+                        "roughness": 1.0,
+                        "heightScale": 0.07999999821186066,
+                        "pomBias": 2.5
+                    }
+                },
+                {
+                    "name": "ShadowCaster"
+                }
+            ],
+            "textures": [
+                {
+                    "role": "Albedo",
+                    "textures": [
+                        "brick_albedo"
+                    ]
+                },
+                {
+                    "role": "Normal",
+                    "textures": [
+                        "brick_norm"
+                    ]
+                },
+                {
+                    "role": "ORM",
+                    "textures": [
+                        "brick_orm"
+                    ]
+                },
+                {
+                    "role": "Emissive",
+                    "textures": [
+                        "default_emissive"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "m_gray",
+            "shaders": [
+                {
+                    "name": "LitColor",
+                    "params_type": "Opaque",
+                    "params": {
+                        "baseColor": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "emissive": [
+                            0.5529410243034363,
+                            0.5529410243034363,
+                            0.5529410243034363
+                        ],
+                        "emissiveStrength": 0.0,
+                        "metallic": 0.6589999794960022,
+                        "roughness": 0.3190000057220459,
+                        "heightScale": 0.0,
+                        "pomBias": 0.0
+                    }
+                },
+                {
+                    "name": "ShadowCaster"
+                }
+            ],
+            "textures": []
+        },
+        {
+            "name": "metal1",
+            "shaders": [
+                {
+                    "name": "LitColor",
+                    "params_type": "Opaque",
+                    "params": {
+                        "baseColor": [
+                            1.0,
+                            0.24509799480438232,
+                            0.24509799480438232,
+                            1.0
+                        ],
+                        "emissive": [
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        "emissiveStrength": 0.0,
+                        "metallic": 0.8650000095367432,
+                        "roughness": 0.08900000154972076,
+                        "heightScale": 0.0,
+                        "pomBias": 0.0
+                    }
+                },
+                {
+                    "name": "ShadowCaster"
+                }
+            ],
+            "textures": []
+        },
+        {
+            "name": "metal2",
+            "shaders": [
+                {
+                    "name": "LitColor",
+                    "params_type": "Opaque",
+                    "params": {
+                        "baseColor": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "emissive": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "emissiveStrength": 0.0,
+                        "metallic": 0.9340000152587891,
+                        "roughness": 0.2199999988079071,
+                        "heightScale": 0.0,
+                        "pomBias": 0.0
+                    }
+                },
+                {
+                    "name": "ShadowCaster"
+                }
+            ],
+            "textures": []
+        },
+        {
+            "name": "emission",
+            "shaders": [
+                {
+                    "name": "LitColor",
+                    "params_type": "Opaque",
+                    "params": {
+                        "baseColor": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ],
+                        "emissive": [
+                            0.34117600321769714,
+                            0.34117600321769714,
+                            0.6470590233802795
+                        ],
+                        "emissiveStrength": 1.7000000476837158,
+                        "metallic": 0.0,
+                        "roughness": 1.0,
+                        "heightScale": 0.0,
+                        "pomBias": 0.0
+                    }
+                },
+                {
+                    "name": "ShadowCaster"
+                }
+            ],
+            "textures": []
+        },
+        {
+            "name": "wood",
+            "shaders": [
+                {
+                    "name": "Lit",
+                    "params_type": "Opaque",
+                    "params": {
+                        "baseColor": [
+                            0.5,
+                            0.5,
+                            0.5,
+                            1.0
+                        ],
+                        "emissive": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "emissiveStrength": 1.0,
+                        "metallic": 1.0,
+                        "roughness": 1.0,
+                        "heightScale": 0.07999999821186066,
+                        "pomBias": 2.5
+                    }
+                },
+                {
+                    "name": "ShadowCaster"
+                }
+            ],
+            "textures": [
+                {
+                    "role": "Albedo",
+                    "textures": [
+                        "wood"
+                    ]
+                },
+                {
+                    "role": "Normal",
+                    "textures": [
+                        "wood_normal"
+                    ]
+                },
+                {
+                    "role": "ORM",
+                    "textures": [
+                        "wood_orm"
+                    ]
+                },
+                {
+                    "role": "Emissive",
+                    "textures": [
+                        "default_emissive"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "m_hover",
+            "shaders": [
+                {
+                    "name": "UI",
+                    "params_type": "UI",
+                    "params": {
+                        "bg_color": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "text_color": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "text_height": 1.0,
+                        "text_anchor": 0.0
+                    }
+                }
+            ],
+            "textures": [
+                {
+                    "role": "Albedo",
+                    "textures": [
+                        "hover_1",
+                        "hover_2"
+                    ]
+                },
+                {
+                    "role": "Normal",
+                    "textures": [
+                        "default_normal"
+                    ]
+                },
+                {
+                    "role": "ORM",
+                    "textures": [
+                        "default_orm"
+                    ]
+                },
+                {
+                    "role": "Emissive",
+                    "textures": [
+                        "default_emissive"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "iron_block",
+            "shaders": [
+                {
+                    "name": "Lit",
+                    "params_type": "Opaque",
+                    "params": {
+                        "baseColor": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "emissive": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "emissiveStrength": 1.0,
+                        "metallic": 0.0,
+                        "roughness": 1.0,
+                        "heightScale": 0.0,
+                        "pomBias": 0.0
+                    }
+                }
+            ],
+            "textures": [
+                {
+                    "role": "Albedo",
+                    "textures": [
+                        "block"
+                    ]
+                },
+                {
+                    "role": "Normal",
+                    "textures": [
+                        "default_normal"
+                    ]
+                },
+                {
+                    "role": "ORM",
+                    "textures": [
+                        "default_orm"
+                    ]
+                },
+                {
+                    "role": "Emissive",
+                    "textures": [
+                        "default_emissive"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "material_sun",
+            "shaders": [
+                {
+                    "name": "Lit",
+                    "params_type": "Opaque",
+                    "params": {
+                        "baseColor": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "emissive": [
+                            0.9900000095367432,
+                            0.8500000238418579,
+                            0.44999998807907104
+                        ],
+                        "emissiveStrength": 0.0,
+                        "metallic": 0.0,
+                        "roughness": 1.0,
+                        "heightScale": 0.0,
+                        "pomBias": 0.0
+                    }
+                }
+            ],
+            "textures": [
+                {
+                    "role": "Albedo",
+                    "textures": [
+                        "texture_sun"
+                    ]
+                },
+                {
+                    "role": "Normal",
+                    "textures": [
+                        "norm"
+                    ]
+                },
+                {
+                    "role": "ORM",
+                    "textures": [
+                        "default_orm"
+                    ]
+                },
+                {
+                    "role": "Emissive",
+                    "textures": [
+                        "default_emissive"
+                    ]
+                }
+            ]
+        }
+    ]
+}

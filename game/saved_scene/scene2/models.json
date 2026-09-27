@@ -1,0 +1,32 @@
+{
+    "models": [
+        {
+            "name": "ship",
+            "vertex": "models/low_poly_ship.bin",
+            "index": "models/low_poly_ship_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "car",
+            "vertex": "models/new_car_n_fixed.bin",
+            "index": "models/new_car_n_fixed_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "skybox_cube",
+            "vertex": "models/skybox_cube.bin",
+            "index": "models/skybox_cube_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "bulding1",
+            "vertex": "models/buildings/building_v.bin",
+            "index": "models/buildings/building_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        }
+    ]
+}

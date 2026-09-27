@@ -1,0 +1,143 @@
+{
+    "textures": [
+        {
+            "name": "cyber",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/cyber.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "signs_board_albedo",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/signs/signs_board_albedo.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "new_car_glass",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/Tex_Glass.jpg",
+            "conv": "AsIs"
+        },
+        {
+            "name": "radiotower_normal",
+            "atlas": "normal_atlas",
+            "path": "textures/assets/telecom/radiotower_normal_h.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "signs_metal_normal",
+            "atlas": "normal_atlas",
+            "path": "textures/assets/signs/signs_metal_normal_h.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "telecom_orm",
+            "atlas": "orm_atlas",
+            "path": "textures/assets/telecom/telecom_orm.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "env_skybox_cube",
+            "atlas": "env_skybox",
+            "path": "textures/skybox.png",
+            "conv": "AsIs",
+            "cube": true
+        },
+        {
+            "name": "norm",
+            "atlas": "normal_atlas",
+            "path": "textures/assets/car_norm.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "line",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/line.jpg",
+            "conv": "AsIs"
+        },
+        {
+            "name": "tower_albedo",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/tower/tower_albedo.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "tower_orm",
+            "atlas": "orm_atlas",
+            "path": "textures/assets/tower/tower_orm.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "tower_emissive",
+            "atlas": "emissive_atlas",
+            "path": "textures/assets/tower/tower_emissive.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "tower_normal",
+            "atlas": "normal_atlas",
+            "path": "textures/assets/tower/tower_normal_h.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "telecom_albedo",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/telecom/telecom_albedo.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "telecom_normal",
+            "atlas": "normal_atlas",
+            "path": "textures/assets/telecom/telecom_normal_h.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "radiotower_albedo",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/telecom/radiotower_albedo.jpg",
+            "conv": "AsIs"
+        },
+        {
+            "name": "radiotower_orm",
+            "atlas": "orm_atlas",
+            "path": "textures/assets/telecom/radiotower_orm.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "windows2",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/windows.jpg",
+            "conv": "AsIs"
+        },
+        {
+            "name": "windows light",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/windows2light.jpg",
+            "conv": "AsIs"
+        },
+        {
+            "name": "signs_board_normal",
+            "atlas": "normal_atlas",
+            "path": "textures/assets/signs/signs_board_normal_h.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "signs_board_orm",
+            "atlas": "orm_atlas",
+            "path": "textures/assets/signs/signs_board_orm.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "signs_metal_albedo",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/signs/signs_metal_albedo.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "signs_metal_orm",
+            "atlas": "orm_atlas",
+            "path": "textures/assets/signs/signs_metal_orm.png",
+            "conv": "AsIs"
+        }
+    ]
+}

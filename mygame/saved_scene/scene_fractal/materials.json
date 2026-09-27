@@ -1,0 +1,66 @@
+{
+    "materials": [
+        {
+            "name": "skybox",
+            "shaders": [
+                {
+                    "name": "Fractal"
+                }
+            ],
+            "textures": []
+        },
+        {
+            "name": "iron_block",
+            "shaders": [
+                {
+                    "name": "AnchorObject",
+                    "params_type": "Opaque",
+                    "params": {
+                        "baseColor": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "emissive": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "emissiveStrength": 1.0,
+                        "metallic": 0.0,
+                        "roughness": 1.0,
+                        "heightScale": 0.0,
+                        "pomBias": 0.0
+                    }
+                }
+            ],
+            "textures": [
+                {
+                    "role": "Albedo",
+                    "textures": [
+                        "iron"
+                    ]
+                },
+                {
+                    "role": "Normal",
+                    "textures": [
+                        "default_normal"
+                    ]
+                },
+                {
+                    "role": "ORM",
+                    "textures": [
+                        "default_orm"
+                    ]
+                },
+                {
+                    "role": "Emissive",
+                    "textures": [
+                        "default_emissive"
+                    ]
+                }
+            ]
+        }
+    ]
+}

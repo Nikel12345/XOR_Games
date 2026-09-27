@@ -1,0 +1,101 @@
+{
+    "textures": [
+        {
+            "name": "cyber",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/cyber.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "brick_norm",
+            "atlas": "normal_atlas",
+            "path": "C:\\Users\\Nikita\\Desktop\\SDL_Engine\\src\\game\\textures\\blocks\\brick_normal_h.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "new_car_glass",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/Tex_Glass.jpg",
+            "conv": "AsIs"
+        },
+        {
+            "name": "brick_orm",
+            "atlas": "orm_atlas",
+            "path": "textures/blocks/brick_orm.png",
+            "conv": "SmoothnessInGreen"
+        },
+        {
+            "name": "env_skybox_cube",
+            "atlas": "env_skybox",
+            "path": "textures/skybox.png",
+            "conv": "AsIs",
+            "cube": true
+        },
+        {
+            "name": "norm",
+            "atlas": "normal_atlas",
+            "path": "textures/assets/car_norm.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "wood_normal",
+            "atlas": "normal_atlas",
+            "path": "C:\\Users\\Nikita\\Desktop\\SDL_Engine\\src\\game\\textures\\blocks\\wood_normal_h.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "new_car",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/new_car.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "new_car_ground",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/new_car_ground.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "brick_albedo",
+            "atlas": "albedo_atlas",
+            "path": "textures/blocks/brick_base_c.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "wood_orm",
+            "atlas": "orm_atlas",
+            "path": "C:\\Users\\Nikita\\Desktop\\SDL_Engine\\src\\game\\textures\\blocks\\wood_orm.png",
+            "conv": "SmoothnessInGreen"
+        },
+        {
+            "name": "wood",
+            "atlas": "albedo_atlas",
+            "path": "textures/blocks/wood_base.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "hover_1",
+            "atlas": "albedo_atlas",
+            "path": "textures/buttons/hover_1.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "hover_2",
+            "atlas": "albedo_atlas",
+            "path": "textures/buttons/hover_2.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "block",
+            "atlas": "albedo_atlas",
+            "path": "C:\\Users\\Nikita\\Desktop\\SDL_Engine\\src\\game\\textures\\blocks\\hull.png",
+            "conv": "AsIs"
+        },
+        {
+            "name": "texture_sun",
+            "atlas": "albedo_atlas",
+            "path": "textures/assets/2k_sun.jpg",
+            "conv": "AsIs"
+        }
+    ]
+}

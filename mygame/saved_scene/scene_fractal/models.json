@@ -1,0 +1,10 @@
+{
+    "models": [
+        {
+            "name": "skybox_cube",
+            "vertex": "models/skybox_cube.bin",
+            "index": "models/skybox_cube_i.bin",
+            "anchor": 0
+        }
+    ]
+}

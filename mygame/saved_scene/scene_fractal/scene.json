@@ -1,0 +1,29 @@
+{
+    "Renderable": {
+        "count": 1,
+        "entities": [
+            0
+        ],
+        "Renderable": {
+            "visible": [
+                true
+            ],
+            "alpha": [
+                1.0
+            ],
+            "flags": [
+                0
+            ],
+            "model": [
+                "skybox_cube"
+            ],
+            "materials": [
+                [
+                    [
+                        "skybox"
+                    ]
+                ]
+            ]
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "materials": [
+        {
+            "name": "skybox",
+            "shaders": [
+                {
+                    "name": "Mandelbrot"
+                }
+            ],
+            "textures": []
+        }
+    ]
+}

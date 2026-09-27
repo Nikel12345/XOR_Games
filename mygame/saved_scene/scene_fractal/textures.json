@@ -1,0 +1,10 @@
+{
+    "textures": [
+        {
+            "name": "iron",
+            "atlas": "albedo_atlas",
+            "path": "../game/textures/blocks/hull.png",
+            "conv": "AsIs"
+        }
+    ]
+}

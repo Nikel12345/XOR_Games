@@ -1,0 +1,83 @@
+{
+    "vertex_shaders": [],
+    "fragment_shaders": [
+        {
+            "name": "fractal_fs",
+            "path": "shaders/fractal/menger.frag.hlsl"
+        },
+        {
+            "name": "anchor_surface_fs",
+            "path": "shaders/fractal/surface.hlsl"
+        }
+    ],
+    "compute_shaders": [],
+    "render_shader_programs": [
+        {
+            "name": "AnchorObject",
+            "vs": "main_pass_vs",
+            "fs": "anchor_surface_fs",
+            "pass": "DefaultMainRenderPass",
+            "vs_buffers": [
+                "DefaultTransformBuffer",
+                "DefaultOutPibBuffer",
+                "cameraBuffer",
+                "DefaultInstanceBuffer"
+            ],
+            "fs_buffers": [
+                "lightBuffer",
+                "DefaultLightCameraBuffer",
+                "cameraBuffer",
+                "FractalFrameBuffer"
+            ],
+            "slots": [
+                "Albedo",
+                "Normal",
+                "ORM",
+                "Emissive"
+            ],
+            "spd": {
+                "cull_mode": 0,
+                "fill_mode": 0,
+                "primitive_type": 0,
+                "depth_test": true,
+                "depth_write": true,
+                "depth_compare": 2,
+                "stencil_test": false,
+                "color_blend": false,
+                "bias_enable": false,
+                "bias_constant": 0.0,
+                "bias_slope": 0.0,
+                "bias_clamp": 0.0
+            }
+        },
+        {
+            "name": "Fractal",
+            "vs": "skybox_vs",
+            "fs": "fractal_fs",
+            "pass": "DefaultMainRenderPass",
+            "vs_buffers": [
+                "cameraBuffer"
+            ],
+            "fs_buffers": [
+                "FractalFrameBuffer",
+                "cameraBuffer"
+            ],
+            "slots": [],
+            "spd": {
+                "cull_mode": 0,
+                "fill_mode": 0,
+                "primitive_type": 0,
+                "depth_test": true,
+                "depth_write": true,
+                "depth_compare": 4,
+                "stencil_test": false,
+                "color_blend": false,
+                "bias_enable": false,
+                "bias_constant": 0.0,
+                "bias_slope": 0.0,
+                "bias_clamp": 0.0
+            }
+        }
+    ],
+    "compute_shader_programs": []
+}

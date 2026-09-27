@@ -1,0 +1,46 @@
+{
+    "vertex_shaders": [
+        {
+            "name": "fractal2d_vs",
+            "path": "shaders/fractal/fractal2d.vert.hlsl",
+            "pull": [
+                "POSITION"
+            ]
+        }
+    ],
+    "fragment_shaders": [
+        {
+            "name": "mandelbrot_fs",
+            "path": "shaders/fractal/mandelbrot.frag.hlsl"
+        }
+    ],
+    "compute_shaders": [],
+    "render_shader_programs": [
+        {
+            "name": "Mandelbrot",
+            "vs": "fractal2d_vs",
+            "fs": "mandelbrot_fs",
+            "pass": "DefaultMainRenderPass",
+            "vs_buffers": [],
+            "fs_buffers": [
+                "MandelbrotOrbitBuffer"
+            ],
+            "slots": [],
+            "spd": {
+                "cull_mode": 0,
+                "fill_mode": 0,
+                "primitive_type": 0,
+                "depth_test": true,
+                "depth_write": false,
+                "depth_compare": 4,
+                "stencil_test": false,
+                "color_blend": false,
+                "bias_enable": false,
+                "bias_constant": 0.0,
+                "bias_slope": 0.0,
+                "bias_clamp": 0.0
+            }
+        }
+    ],
+    "compute_shader_programs": []
+}

@@ -1,0 +1,648 @@
+{
+    "models": [
+        {
+            "name": "sign04",
+            "vertex": "models/signs/sign04.bin",
+            "index": "models/signs/sign04_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign12",
+            "vertex": "models/signs/sign12.bin",
+            "index": "models/signs/sign12_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign13",
+            "vertex": "models/signs/sign13.bin",
+            "index": "models/signs/sign13_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign10",
+            "vertex": "models/signs/sign10.bin",
+            "index": "models/signs/sign10_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign11",
+            "vertex": "models/signs/sign11.bin",
+            "index": "models/signs/sign11_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign14",
+            "vertex": "models/signs/sign14.bin",
+            "index": "models/signs/sign14_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign15",
+            "vertex": "models/signs/sign15.bin",
+            "index": "models/signs/sign15_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "skybox_cube",
+            "vertex": "models/skybox_cube.bin",
+            "index": "models/skybox_cube_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign08",
+            "vertex": "models/signs/sign08.bin",
+            "index": "models/signs/sign08_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign01",
+            "vertex": "models/signs/sign01.bin",
+            "index": "models/signs/sign01_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign02",
+            "vertex": "models/signs/sign02.bin",
+            "index": "models/signs/sign02_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign03",
+            "vertex": "models/signs/sign03.bin",
+            "index": "models/signs/sign03_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign05",
+            "vertex": "models/signs/sign05.bin",
+            "index": "models/signs/sign05_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign06",
+            "vertex": "models/signs/sign06.bin",
+            "index": "models/signs/sign06_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign07",
+            "vertex": "models/signs/sign07.bin",
+            "index": "models/signs/sign07_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign09",
+            "vertex": "models/signs/sign09.bin",
+            "index": "models/signs/sign09_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign16",
+            "vertex": "models/signs/sign16.bin",
+            "index": "models/signs/sign16_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign17",
+            "vertex": "models/signs/sign17.bin",
+            "index": "models/signs/sign17_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign18",
+            "vertex": "models/signs/sign18.bin",
+            "index": "models/signs/sign18_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign19",
+            "vertex": "models/signs/sign19.bin",
+            "index": "models/signs/sign19_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign20",
+            "vertex": "models/signs/sign20.bin",
+            "index": "models/signs/sign20_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign21",
+            "vertex": "models/signs/sign21.bin",
+            "index": "models/signs/sign21_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign22",
+            "vertex": "models/signs/sign22.bin",
+            "index": "models/signs/sign22_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign23",
+            "vertex": "models/signs/sign23.bin",
+            "index": "models/signs/sign23_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign24",
+            "vertex": "models/signs/sign24.bin",
+            "index": "models/signs/sign24_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign25",
+            "vertex": "models/signs/sign25.bin",
+            "index": "models/signs/sign25_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign26",
+            "vertex": "models/signs/sign26.bin",
+            "index": "models/signs/sign26_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign27",
+            "vertex": "models/signs/sign27.bin",
+            "index": "models/signs/sign27_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign28",
+            "vertex": "models/signs/sign28.bin",
+            "index": "models/signs/sign28_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign29",
+            "vertex": "models/signs/sign29.bin",
+            "index": "models/signs/sign29_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign30",
+            "vertex": "models/signs/sign30.bin",
+            "index": "models/signs/sign30_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "sign31",
+            "vertex": "models/signs/sign31.bin",
+            "index": "models/signs/sign31_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm"
+        },
+        {
+            "name": "building1",
+            "vertex": "models/buildings/building1_v.bin",
+            "index": "models/buildings/building1_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building1_v.bin",
+                    "index": "models/buildings/building1_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building2",
+            "vertex": "models/buildings/building2_v.bin",
+            "index": "models/buildings/building2_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building2_v.bin",
+                    "index": "models/buildings/building2_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building3",
+            "vertex": "models/buildings/building3_v.bin",
+            "index": "models/buildings/building3_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building3_v.bin",
+                    "index": "models/buildings/building3_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building4",
+            "vertex": "models/buildings/building4_v.bin",
+            "index": "models/buildings/building4_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building4_v.bin",
+                    "index": "models/buildings/building4_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building5",
+            "vertex": "models/buildings/building5_v.bin",
+            "index": "models/buildings/building5_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building5_v.bin",
+                    "index": "models/buildings/building5_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building6",
+            "vertex": "models/buildings/building6_v.bin",
+            "index": "models/buildings/building6_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building6_v.bin",
+                    "index": "models/buildings/building6_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building7",
+            "vertex": "models/buildings/building7_v.bin",
+            "index": "models/buildings/building7_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building7_v.bin",
+                    "index": "models/buildings/building7_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building8",
+            "vertex": "models/buildings/building8_v.bin",
+            "index": "models/buildings/building8_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building8_v.bin",
+                    "index": "models/buildings/building8_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building9",
+            "vertex": "models/buildings/building9_v.bin",
+            "index": "models/buildings/building9_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building9_v.bin",
+                    "index": "models/buildings/building9_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building10",
+            "vertex": "models/buildings/building10_v.bin",
+            "index": "models/buildings/building10_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building10_v.bin",
+                    "index": "models/buildings/building10_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building11",
+            "vertex": "models/buildings/building11_v.bin",
+            "index": "models/buildings/building11_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building11_v.bin",
+                    "index": "models/buildings/building11_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building12",
+            "vertex": "models/buildings/building12_v.bin",
+            "index": "models/buildings/building12_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building12_v.bin",
+                    "index": "models/buildings/building12_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building13",
+            "vertex": "models/buildings/building13_v.bin",
+            "index": "models/buildings/building13_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building13_v.bin",
+                    "index": "models/buildings/building13_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building14",
+            "vertex": "models/buildings/building14_v.bin",
+            "index": "models/buildings/building14_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building14_v.bin",
+                    "index": "models/buildings/building14_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building15",
+            "vertex": "models/buildings/building15_v.bin",
+            "index": "models/buildings/building15_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building15_v.bin",
+                    "index": "models/buildings/building15_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building16",
+            "vertex": "models/buildings/building16_v.bin",
+            "index": "models/buildings/building16_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building16_v.bin",
+                    "index": "models/buildings/building16_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building17",
+            "vertex": "models/buildings/building17_v.bin",
+            "index": "models/buildings/building17_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building17_v.bin",
+                    "index": "models/buildings/building17_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building18",
+            "vertex": "models/buildings/building18_v.bin",
+            "index": "models/buildings/building18_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building18_v.bin",
+                    "index": "models/buildings/building18_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building19",
+            "vertex": "models/buildings/building19_v.bin",
+            "index": "models/buildings/building19_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building19_v.bin",
+                    "index": "models/buildings/building19_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building20",
+            "vertex": "models/buildings/building20_v.bin",
+            "index": "models/buildings/building20_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building20_v.bin",
+                    "index": "models/buildings/building20_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building21",
+            "vertex": "models/buildings/building21_v.bin",
+            "index": "models/buildings/building21_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building21_v.bin",
+                    "index": "models/buildings/building21_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building22",
+            "vertex": "models/buildings/building22_v.bin",
+            "index": "models/buildings/building22_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building22_v.bin",
+                    "index": "models/buildings/building22_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building23",
+            "vertex": "models/buildings/building23_v.bin",
+            "index": "models/buildings/building23_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building23_v.bin",
+                    "index": "models/buildings/building23_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building24",
+            "vertex": "models/buildings/building24_v.bin",
+            "index": "models/buildings/building24_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building24_v.bin",
+                    "index": "models/buildings/building24_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building25",
+            "vertex": "models/buildings/building25_v.bin",
+            "index": "models/buildings/building25_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building25_v.bin",
+                    "index": "models/buildings/building25_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building26",
+            "vertex": "models/buildings/building26_v.bin",
+            "index": "models/buildings/building26_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building26_v.bin",
+                    "index": "models/buildings/building26_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building27",
+            "vertex": "models/buildings/building27_v.bin",
+            "index": "models/buildings/building27_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building27_v.bin",
+                    "index": "models/buildings/building27_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building28",
+            "vertex": "models/buildings/building28_v.bin",
+            "index": "models/buildings/building28_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building28_v.bin",
+                    "index": "models/buildings/building28_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building29",
+            "vertex": "models/buildings/building29_v.bin",
+            "index": "models/buildings/building29_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building29_v.bin",
+                    "index": "models/buildings/building29_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        },
+        {
+            "name": "building30",
+            "vertex": "models/buildings/building30_v.bin",
+            "index": "models/buildings/building30_i.bin",
+            "anchor": 0,
+            "pool": "PosUVNorm",
+            "lods": [
+                {
+                    "vertex": "models/buildings/building30_v.bin",
+                    "index": "models/buildings/building30_i.bin",
+                    "switch": 128.0
+                }
+            ]
+        }
+    ]
+}
