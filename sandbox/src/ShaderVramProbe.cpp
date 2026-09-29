@@ -147,7 +147,7 @@ void RunShaderVramProbe()
     if (!InitVramMeter()) { SDL_Log("DXGI meter unavailable - aborting"); return; }
 
     // SPIRV-ONLY: на 3.4 запрос «любой формат» уводит в D3D12, и compute-пайплайны из сырого
-    // SPIR-V там не собираются (см. SDL_FORK.md / заметку про 3.4.14).
+    // SPIR-V там не собираются.
     SDL_Window* win = SDL_CreateWindow("shader vram probe", 320, 240, 0);
     SDL_GPUDevice* dev = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV, false, nullptr);
     if (!dev || !win) { SDL_Log("device/window creation failed: %s", SDL_GetError()); return; }
