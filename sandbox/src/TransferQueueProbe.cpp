@@ -230,7 +230,7 @@ int main(int, char**)
 
             SDL_EndGPURenderPass(sdl_rp);
         },
-            std::move(rptd), 0);
+            std::move(rptd), PassAnchor::ChainStart());
 
         // ── Вычислительный ПРЕПАСС: штатный шов движка под работу, которая идёт в ОТДЕЛЬНОМ
         //    командном буфере до основных проходов (в игре там каллинг). Нам это и нужно:
@@ -246,7 +246,7 @@ int main(int, char**)
             p->ComputePassStandardBody(cb, &cp, &bm, &push, &dd, frame);
             ++g_frames_rotated;
         },
-            0);
+            PassAnchor::ChainStart());
 
         // ── Шейдеры и программа. Вершинник перечисляет ПОТРЕБЛЯЕМЫЕ стримы: это и есть
         //    декларация usage=VERTEX для _VertexPosBuffer (см. BufferData.h) ──

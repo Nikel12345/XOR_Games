@@ -134,7 +134,7 @@ int main(int, char**)
         DummyDispatchData dd{};
         pm->ComputePassStandardBody(cb, &cp, bm, &push, &dd, pass_frame);
     },
-        10);
+        PassAnchor::ChainStart());
 
     // CSD (компиляция HLSL→SPIR-V через кэш) + программа (rw-декларация даёт буферу
     // COMPUTE_STORAGE_WRITE — ровно то, что требует RW-бинд BeginGPUComputePass).

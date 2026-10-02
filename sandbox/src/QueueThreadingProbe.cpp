@@ -192,7 +192,7 @@ int main(int, char**)
             }
             SDL_EndGPURenderPass(sdl_rp);
         },
-            std::move(rptd), 10);
+            std::move(rptd), PassAnchor::ChainStart());
 
         // Вращение — препассом (см. оговорку про препасс в TransferQueueProbe.cpp: он взят
         // потому, что ExecutePrepassesSteps отдельный вход, а не потому, что предназначен
@@ -205,7 +205,7 @@ int main(int, char**)
             DummyDispatchData dd{};
             p->ComputePassStandardBody(cb, &cp, &bm, &push, &dd, frame);
         },
-            0);
+            PassAnchor::ChainStart());
 
         sm.CreateVertexShader("triangle_vs", vs_path.c_str(), pool, { ShaderBase::POSITION }, &bm);
         sm.CreateFragmentShader("triangle_fs", fs_path.c_str());
