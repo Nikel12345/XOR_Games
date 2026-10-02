@@ -1,7 +1,7 @@
 // ============================================================================
 //  Sandbox: поддаётся ли гравитационный шаг автовекторизации — БЕЗ интринсиков.
 //
-//  Зачем. Проход по 800k сущностей в Game::SimulateGravity стоит ~9-13 мс, и
+//  Зачем. Проход по 800k сущностей в GravitySystem::SimulateGravity стоит ~9-13 мс, и
 //  /Qvec-report:2 говорит «не векторизован» и для текущей версии, и для исходной.
 //  Прежде чем перестраивать игровой цикл, нужен голый ответ: цикл такой формы
 //  вообще векторизуем здесь — или мешает что-то принципиальное (sqrt, деление,
@@ -44,7 +44,7 @@ constexpr float  kGravSoft = 1e-3f;
 constexpr float  kGM       = 5000.0f;
 constexpr int    kRepeats  = 20;        // прогонов на вариант, берём лучший
 
-// Та же структура, что Game::GravitySource в своей исходной форме (до габаритов рамки).
+// Та же структура, что GravitySystem::GravitySource в своей исходной форме (до габаритов рамки).
 struct Src { float x, y, z, gm; };
 
 using Clock = std::chrono::steady_clock;
@@ -55,7 +55,7 @@ double MsSince(Clock::time_point t) {
 
 // ── V0: форма как в игре ────────────────────────────────────────────────────
 // Источники — вектор структур, внутри ветка отсечения. Ровно то, что стоит в
-// Game::SimulateGravity, и ровно то, на что компилятор отвечает «500».
+// GravitySystem::SimulateGravity, и ровно то, на что компилятор отвечает «500».
 void StepGameShape(ObjectManager& om, SceneData* scene, const std::vector<Src>& sources)
 {
     om.ForEach<Positions, Velocities>(scene, [&sources](Positions& P, Velocities& V)

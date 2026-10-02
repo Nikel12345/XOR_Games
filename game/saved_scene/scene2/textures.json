@@ -9,7 +9,7 @@
         {
             "name": "brick_norm",
             "atlas": "normal_atlas",
-            "path": "C:\\Users\\Nikita\\Desktop\\SDL_Engine\\src\\game\\textures\\blocks\\brick_normal_h.png",
+            "path": "textures/blocks/brick_normal_h.png",
             "conv": "AsIs"
         },
         {
@@ -40,7 +40,7 @@
         {
             "name": "wood_normal",
             "atlas": "normal_atlas",
-            "path": "C:\\Users\\Nikita\\Desktop\\SDL_Engine\\src\\game\\textures\\blocks\\wood_normal_h.png",
+            "path": "textures/blocks/wood_normal_h.png",
             "conv": "AsIs"
         },
         {
@@ -64,7 +64,7 @@
         {
             "name": "wood_orm",
             "atlas": "orm_atlas",
-            "path": "C:\\Users\\Nikita\\Desktop\\SDL_Engine\\src\\game\\textures\\blocks\\wood_orm.png",
+            "path": "textures/blocks/wood_orm.png",
             "conv": "SmoothnessInGreen"
         },
         {
@@ -88,7 +88,7 @@
         {
             "name": "block",
             "atlas": "albedo_atlas",
-            "path": "C:\\Users\\Nikita\\Desktop\\SDL_Engine\\src\\game\\textures\\blocks\\hull.png",
+            "path": "textures/blocks/hull.png",
             "conv": "AsIs"
         },
         {

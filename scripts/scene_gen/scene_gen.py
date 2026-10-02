@@ -34,11 +34,11 @@ fill = 1 — законченный шар с шаровым же вырезом
 
 Ось Y — полноценная: орбитальная скорость считается по ПОЛНОМУ радиусу |(x,y,z)|, а не по
 проекции на XZ, поэтому куб с ненулевой высотой летит по наклонной круговой орбите, а не
-по кольцу на своей высоте. Требует ОБЪЁМНОЙ гравитации в Game.cpp::SimulateGravity
+по кольцу на своей высоте. Требует ОБЪЁМНОЙ гравитации в GravitySystem.cpp::SimulateGravity
 (ускорение по всем трём осям) — плоская XZ-гравитация такие орбиты порвёт.
 
 Каждому кубу случайно назначается материал (из CUBE_MATERIALS) и модель
-"cube_0".."cube_(N-1)". Модели — процедурные параллелепипеды из Game.cpp
+"cube_0".."cube_(N-1)". Модели — процедурные параллелепипеды из GravityScene.cpp
 (цикл по kCubeVariants). NUM_CUBE_MODELS ниже ОБЯЗАН совпадать с kCubeVariants.
 
 Запуск (без параметров):
@@ -95,6 +95,7 @@ GRAVITY_CONST = 1.0         # G без крошечной степени
 CENTRAL_MASS = 5000.0       # масса гравитационного объекта в (0,0)
 GM = GRAVITY_CONST * CENTRAL_MASS   # μ — стандартный гравитационный параметр
 ORBIT_SPEED_SPREAD = 0.07   # индивидуальный разброс скорости, доля (±доля); 0 = идеальные круги
+SIM_DT = 0.05
 
 # --- Сущность-центр притяжения (Transform + GravityComponent) ---
 # Гравитация в игре привязана к СУЩНОСТИ: центр там, где её Transform, сила = её gm. Поэтому
@@ -110,14 +111,14 @@ RANDOM_SEED = 42
 
 # Материалы (уже зарегистрированы в Game.cpp / materials.json) — раздаются кубам случайно.
 CUBE_MATERIALS = ["m_orange", "m_gray", "metal1", "metal2", "emission"]
-# Уровни моделей cube_* в игре (Game.cpp): 1 — quad, 2 — точка. Материал уровня — тот же с этим
+# Уровни моделей cube_* в игре (GravityScene.cpp): 1 — quad, 2 — точка. Материал уровня — тот же с этим
 # суффиксом, на программе LOD_Quad / LOD_Splat (materials.json сцены).
 CUBE_LEVEL_SUFFIXES = ["", "_lod", "_splat"]
 
 # ----------------------------------------------------------------------------
-#  Модели кубов — процедурные параллелепипеды из Game.cpp с именами cube_0..cube_(N-1).
+#  Модели кубов — процедурные параллелепипеды из GravityScene.cpp с именами cube_0..cube_(N-1).
 #  Питон только раздаёт эти имена в поле Renderable.models сцены; сама геометрия строится в игре.
-#  NUM_CUBE_MODELS ДОЛЖЕН быть равен kCubeVariants в Game.cpp — иначе имена не сойдутся
+#  NUM_CUBE_MODELS ДОЛЖЕН быть равен kCubeVariants в GravityScene.cpp — иначе имена не сойдутся
 #  (движок не найдёт модель по имени и сущность не отрисуется).
 # ----------------------------------------------------------------------------
 NUM_CUBE_MODELS = 12
@@ -317,6 +318,7 @@ def emit_section(section, cols):
 # SaveScene движка). Держим их константами: по ним же определяется порядок блоков в файле.
 CUBES_ARCHETYPE = "Renderable,Shadow,Transform,Velocity"
 CENTER_ARCHETYPE = "Gravity,Renderable,Transform"
+GRAVITY_WORLD_ARCHETYPE = "GravityWorld"
 
 
 def _renderable_obj(n, model_cells, material_rows):
@@ -371,6 +373,14 @@ def _light_block():
             '"ShadowCaster":{}}')
 
 
+def _gravity_world_block(entity_id):
+    world_obj = ",".join([_num_col("sim_dt", [_fmt(SIM_DT)])])
+    return ('"' + GRAVITY_WORLD_ARCHETYPE + '":{'
+            '"count":1,'
+            '"entities":[' + str(entity_id) + '],'
+            '"GravityWorld":{' + world_obj + '}}')
+
+
 def resolved_sections():
     """SECTIONS с применённым COUNT_SCALE и проверкой параметров; пустые секции отброшены."""
     out = []
@@ -404,10 +414,13 @@ def build_scene():
     # файле. Совпасть с этим порядком здесь — значит выдать канонический файл, который первое
     # же пересохранение из редактора не переставит и в котором не поедут id.
     next_id = 1 if EMIT_DIRECT_LIGHT else 0   # свет, если включён, занимает id 0
-    center_id = cubes_base = 0
-    for key in sorted([CENTER_ARCHETYPE, CUBES_ARCHETYPE]):
+    center_id = cubes_base = world_id = 0
+    for key in sorted([CENTER_ARCHETYPE, CUBES_ARCHETYPE, GRAVITY_WORLD_ARCHETYPE]):
         if key == CENTER_ARCHETYPE:
             center_id = next_id
+            next_id += 1
+        elif key == GRAVITY_WORLD_ARCHETYPE:
+            world_id = next_id
             next_id += 1
         else:
             cubes_base = next_id
@@ -436,7 +449,8 @@ def build_scene():
     blocks = [cols.materials.json("materials"), cols.models.json("models")]
     # if EMIT_DIRECT_LIGHT:
     #     blocks.append(_light_block())
-    by_key = {CENTER_ARCHETYPE: center_block, CUBES_ARCHETYPE: cubes_block}
+    by_key = {CENTER_ARCHETYPE: center_block, CUBES_ARCHETYPE: cubes_block,
+              GRAVITY_WORLD_ARCHETYPE: _gravity_world_block(world_id)}
     for key in sorted(by_key):
         blocks.append(by_key[key])
 
@@ -468,7 +482,7 @@ def main():
     print("Свет (entity 0): {}".format("да" if EMIT_DIRECT_LIGHT else "нет"))
     print("Использовано моделей: {} из {} (cube_0..cube_{}).".format(
         len(used_models), NUM_CUBE_MODELS, NUM_CUBE_MODELS - 1))
-    print("Проверь: kCubeVariants в Game.cpp == NUM_CUBE_MODELS ({}), "
+    print("Проверь: kCubeVariants в GravityScene.cpp == NUM_CUBE_MODELS ({}), "
           "kGravGM == GM ({}).".format(NUM_CUBE_MODELS, GM))
 
 

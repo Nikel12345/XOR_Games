@@ -10,7 +10,6 @@
 #include "InputManager.h"
 #include "ThreadController.h"
 #include "LightDataModule.h"
-#include "DefaultShaderSet.h"
 #include "FractalShaderSet.h"
 #include "BufferManager.h"
 #include "FractalUpdateSet.h"
@@ -49,20 +48,6 @@ SDL_AppResult MyGame::MainInit()
         glm::vec3(-0.533f, -0.339f, -0.775f),
         glm::vec3(0.0f, 1.0f, 0.0f)  // вектор вверх
     );
-
-    {
-        // Только COMPUTE-программы: они держат указатели на буферы/атласы + dispatch_func, не
-        // сериализуются. CSD (culling/bloom) приезжают из saved_scene/scene_fractal/shaders.json;
-        // csp хранит имя cs — резолв на сборке compute-пайплайна (после LoadScene).
-        using namespace DefaultShaderProgramSet;
-        SetBloomPrograms(ctx);
-        SetAOPrograms(ctx);           // SSAO: якорённые кубы затеняются как обычная геометрия, губка — нет (её ambient = 0)
-        // Туман экранный, а губка пишет честный SV_Depth — значит он ляжет ПОВЕРХ её собственной
-        // атмосферы (menger.frag.hlsl) третьим слоем, и его дистанции в юнитах якоря непрерывными
-        // по масштабу не будут. Осознанно принято: отбор «чья это атмосфера» — свойство шейдера, а
-        // не пикселя, и экранному проходу недоступен. Max opacity = 0 выключает его в редакторе.
-        SetFogProgram(ctx);
-    }
 
     // Сцена = выбор фрактала. Всё сценозависимое — буфер кадра (CreateBufferData) и его
     // апдейтер (FractalUpdateSet) — под if'ом с её именем (пуши шейдеров уже нет: она

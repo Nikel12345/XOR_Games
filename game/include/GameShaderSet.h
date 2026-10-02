@@ -25,7 +25,7 @@ namespace GameShaderSet
     // программы, и общим проходом в конце каждой загрузки).
     void RegisterShaderFuncs(EngineContext* ctx);
 
-    // Пишет sim-поток (Game::SimulateGravity), читает пуш gravity_centers на render-потоке.
+    // Пишет sim-поток (GravitySystem::SimulateGravity), читает пуш gravity_centers на render-потоке.
     // Лишние центры сверх MAX_GRAVITY_CENTERS отбрасываются.
     void PublishGravityCenters(const float (*xyz)[3], size_t count);
 }

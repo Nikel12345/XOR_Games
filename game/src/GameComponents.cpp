@@ -20,4 +20,9 @@ void RegisterGameComponents()
     reg.Register({ .name = "Jet", .sig_type = typeid(JetComponent),
         .add_default = AddDefaultAoS<JetComponent>,
         .fields = { FieldSpec::Num("center", U32, AOS_NUM(JetComponent, center), 0, 0, 1) } });
+
+    reg.Register({ .name = "GravityWorld", .sig_type = typeid(GravityWorldComponent),
+        .add_default = AddDefaultAoS<GravityWorldComponent>,
+        .fields = { FieldSpec::Num("sim_dt", F32, AOS_NUM(GravityWorldComponent, sim_dt), 0, FLT_MAX, 0.001f),
+                    FieldSpec::Num("jet_return_distance", F32, AOS_NUM(GravityWorldComponent, jet_return_distance), 0, FLT_MAX, 1.0f) } });
 }

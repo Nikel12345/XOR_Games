@@ -14,7 +14,7 @@ GRAVITY_CORE_RADIUS: внутри него притяжение линейно �
 летящих из него двумя встречными конусами вдоль его оси Y (см. JET_* ниже). Кубы джета
 несут компонент Jet со ссылкой на свой центр (Jet.center == Gravity.id); гравитация их не
 тянет, а ушедший дальше JET_RANGE куб игра возвращает в его центр с той же скоростью
-(Game.cpp::ReturnJets).
+(GravitySystem.cpp::ReturnJets).
 
 Сцена теперь — ПАПКА: scene.json (ECS) + рядом манифесты ресурсов
 (materials.json / textures.json / models.json / shaders.json). Этот скрипт пишет
@@ -47,11 +47,11 @@ fill = 1 — законченный шар с шаровым же вырезом
 
 Ось Y — полноценная: орбитальная скорость считается по ПОЛНОМУ радиусу |(x,y,z)|, а не по
 проекции на XZ, поэтому куб с ненулевой высотой летит по наклонной круговой орбите, а не
-по кольцу на своей высоте. Требует ОБЪЁМНОЙ гравитации в Game.cpp::SimulateGravity
+по кольцу на своей высоте. Требует ОБЪЁМНОЙ гравитации в GravitySystem.cpp::SimulateGravity
 (ускорение по всем трём осям) — плоская XZ-гравитация такие орбиты порвёт.
 
 Каждому кубу случайно назначается материал (из CUBE_MATERIALS) и модель
-"cube_0".."cube_(N-1)". Модели — процедурные параллелепипеды из Game.cpp
+"cube_0".."cube_(N-1)". Модели — процедурные параллелепипеды из GravityScene.cpp
 (цикл по kCubeVariants). NUM_CUBE_MODELS ниже ОБЯЗАН совпадать с kCubeVariants.
 
 Запуск (без параметров):
@@ -116,7 +116,6 @@ ORBIT_SPEED_SPREAD = 0.07   # индивидуальный разброс ско
 # 0 = точечная масса, как в scene_gen.py (рукава закрутятся за пару минут).
 # Период оборота 2*pi*sqrt(R^3/GM): быстрее вращение — больше CENTRAL_MASS (период ~ 1/sqrt(GM)).
 GRAVITY_CORE_RADIUS = max(sec.outer_radius for sec in SECTIONS)
-# Шаг симуляции — только для отчёта о периоде в тиках. ОБЯЗАН совпадать с kSimDt в Game.cpp.
 SIM_DT = 0.05
 
 # --- Спиральные рукава ---
@@ -152,10 +151,9 @@ SKYBOX_MATERIAL = "skybox"
 JET_COUNT = 35000         # кубов на центр, на оба конуса вместе
 JET_SPREAD_DEG = 3.0      # полуугол конуса, градусы
 JET_SPEED = 30.0          # юниты/с (в тех же единицах, что и орбитальные скорости)
-# Дистанция от центра, дальше которой игра возвращает куб в центр. ОБЯЗАНА совпадать с
-# kJetReturnDistance в Game.cpp. Кубы изначально разложены по всей длине джета: если бы все
-# стартовали из центра, то при одной скорости они и возвращались бы разом — джет пульсировал бы
-# волной вместо ровной струи.
+# Дистанция от центра, дальше которой игра возвращает куб в центр. Кубы изначально разложены по
+# всей длине джета: если бы все стартовали из центра, то при одной скорости они и возвращались
+# бы разом — джет пульсировал бы волной вместо ровной струи.
 JET_RANGE = 2500.0
 # Материал уровней LOD — через те же суффиксы CUBE_LEVEL_SUFFIXES (jet / jet_lod / jet_splat).
 JET_MATERIAL = "jet"
@@ -165,14 +163,14 @@ RANDOM_SEED = 42
 
 # Материалы (materials.json сцены) — раздаются кубам случайно.
 CUBE_MATERIALS = ["Emission_LitColor"]
-# Уровни моделей cube_* в игре (Game.cpp): 1 — quad, 2 — точка. Материал уровня — тот же с этим
+# Уровни моделей cube_* в игре (GravityScene.cpp): 1 — quad, 2 — точка. Материал уровня — тот же с этим
 # суффиксом, на программе LOD_Quad / LOD_Splat (materials.json сцены).
 CUBE_LEVEL_SUFFIXES = ["", "_lod", "_splat"]
 
 # ----------------------------------------------------------------------------
-#  Модели кубов — процедурные параллелепипеды из Game.cpp с именами cube_0..cube_(N-1).
+#  Модели кубов — процедурные параллелепипеды из GravityScene.cpp с именами cube_0..cube_(N-1).
 #  Питон только раздаёт эти имена в поле Renderable.models сцены; сама геометрия строится в игре.
-#  NUM_CUBE_MODELS ДОЛЖЕН быть равен kCubeVariants в Game.cpp — иначе имена не сойдутся
+#  NUM_CUBE_MODELS ДОЛЖЕН быть равен kCubeVariants в GravityScene.cpp — иначе имена не сойдутся
 #  (движок не найдёт модель по имени и сущность не отрисуется).
 # ----------------------------------------------------------------------------
 NUM_CUBE_MODELS = 12
@@ -436,6 +434,7 @@ CUBES_ARCHETYPE = "Renderable,Shadow,Transform,Velocity"
 CENTER_ARCHETYPE = "Gravity,Renderable,Transform"
 JETS_ARCHETYPE = "Jet,Renderable,Transform,Velocity"
 SKYBOX_ARCHETYPE = "Renderable"
+GRAVITY_WORLD_ARCHETYPE = "GravityWorld"
 
 
 def _renderable_obj(n, model_cells, material_rows):
@@ -491,6 +490,14 @@ def _light_block():
             '"ShadowCaster":{}}')
 
 
+def _gravity_world_block(entity_id):
+    world_obj = ",".join([_num_col("sim_dt", [_fmt(SIM_DT)]), _num_col("jet_return_distance", [_fmt(JET_RANGE)])])
+    return ('"' + GRAVITY_WORLD_ARCHETYPE + '":{'
+            '"count":1,'
+            '"entities":[' + str(entity_id) + '],'
+            '"GravityWorld":{' + world_obj + '}}')
+
+
 def resolved_sections():
     """SECTIONS с применённым COUNT_SCALE и проверкой параметров; пустые секции отброшены."""
     out = []
@@ -534,10 +541,13 @@ def build_scene():
     # файле. Совпасть с этим порядком здесь — значит выдать канонический файл, который первое
     # же пересохранение из редактора не переставит и в котором не поедут id.
     next_id = 1 if EMIT_DIRECT_LIGHT else 0   # свет, если включён, занимает id 0
-    center_id = cubes_base = jets_base = skybox_id = 0
-    for key in sorted([CENTER_ARCHETYPE, CUBES_ARCHETYPE, JETS_ARCHETYPE, SKYBOX_ARCHETYPE]):
+    center_id = cubes_base = jets_base = skybox_id = world_id = 0
+    for key in sorted([CENTER_ARCHETYPE, CUBES_ARCHETYPE, JETS_ARCHETYPE, SKYBOX_ARCHETYPE, GRAVITY_WORLD_ARCHETYPE]):
         if key == CENTER_ARCHETYPE:
             center_id = next_id
+            next_id += 1
+        elif key == GRAVITY_WORLD_ARCHETYPE:
+            world_id = next_id
             next_id += 1
         elif key == SKYBOX_ARCHETYPE:
             skybox_id = next_id
@@ -588,7 +598,8 @@ def build_scene():
     blocks = [cols.materials.json("materials"), cols.models.json("models")]
     # if EMIT_DIRECT_LIGHT:
     #     blocks.append(_light_block())
-    by_key = {CENTER_ARCHETYPE: center_block, CUBES_ARCHETYPE: cubes_block, SKYBOX_ARCHETYPE: skybox_block}
+    by_key = {CENTER_ARCHETYPE: center_block, CUBES_ARCHETYPE: cubes_block, SKYBOX_ARCHETYPE: skybox_block,
+              GRAVITY_WORLD_ARCHETYPE: _gravity_world_block(world_id)}
     if n_jets:
         by_key[JETS_ARCHETYPE] = jets_block
     for key in sorted(by_key):
@@ -628,7 +639,7 @@ def main():
     print("Свет (entity 0): {}".format("да" if EMIT_DIRECT_LIGHT else "нет"))
     print("Использовано моделей: {} из {} (cube_0..cube_{}).".format(
         len(used_models), NUM_CUBE_MODELS, NUM_CUBE_MODELS - 1))
-    print("Проверь: kCubeVariants в Game.cpp == NUM_CUBE_MODELS ({}), "
+    print("Проверь: kCubeVariants в GravityScene.cpp == NUM_CUBE_MODELS ({}), "
           "kGravGM == GM ({}).".format(NUM_CUBE_MODELS, GM))
 
 
