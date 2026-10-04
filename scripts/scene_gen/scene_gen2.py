@@ -138,6 +138,7 @@ GRAVITY_CENTER_POS = (0.0, 0.0, 0.0)
 GRAVITY_CENTER_SCALE = 25.0
 GRAVITY_CENTER_MODEL = "sphere"
 GRAVITY_CENTER_MATERIAL = "black_hole"
+GRAVITY_CENTER_SCHWARZSCHILD_RADIUS = GRAVITY_CENTER_SCALE / (1.5 * math.sqrt(3.0))
 
 # --- Скайбокс ---
 # Сущность из одного Renderable, без Transform: вершинник скайбокса ставит куб вокруг камеры сам.
@@ -431,7 +432,7 @@ def emit_jets(center_pos, center_id, cols):
 # Ключи архетипов = отсортированные по алфавиту имена компонентов через запятую (так их строит
 # SaveScene движка). Держим их константами: по ним же определяется порядок блоков в файле.
 CUBES_ARCHETYPE = "Renderable,Shadow,Transform,Velocity"
-CENTER_ARCHETYPE = "Gravity,Renderable,Transform"
+CENTER_ARCHETYPE = "GravitationalLens,Gravity,Renderable,Transform"
 JETS_ARCHETYPE = "Jet,Renderable,Transform,Velocity"
 SKYBOX_ARCHETYPE = "Renderable"
 GRAVITY_WORLD_ARCHETYPE = "GravityWorld"
@@ -450,7 +451,7 @@ def _renderable_obj(n, model_cells, material_rows):
 
 
 def _gravity_center_block(entity_id, center_id, cols):
-    """Блок архетипа Gravity,Renderable,Transform — сама сущность-центр (одна штука).
+    """Сама сущность-центр (одна штука).
 
     Имена компонентов идут по алфавиту: тем же порядком их пишет SaveScene движка, так что
     пересохранение сцены из редактора не переставляет ключи в файле.
@@ -462,9 +463,12 @@ def _gravity_center_block(entity_id, center_id, cols):
                             _num_col("core_radius", [_fmt(GRAVITY_CORE_RADIUS)])])
     rend_obj = _renderable_obj(1, [str(cols.models.intern(GRAVITY_CENTER_MODEL))],
                                ['[[' + str(cols.materials.intern(GRAVITY_CENTER_MATERIAL)) + ']]'])
+    lens_obj = ",".join([_num_col("schwarzschild_radius", [_fmt(GRAVITY_CENTER_SCHWARZSCHILD_RADIUS)]),
+                         _num_col("inner_radius", [_fmt(GRAVITY_CENTER_SCALE)])])
     return ('"' + CENTER_ARCHETYPE + '":{'
             '"count":1,'
             '"entities":[' + str(entity_id) + '],'
+            '"GravitationalLens":{' + lens_obj + '},'
             '"Gravity":{' + gravity_obj + '},'
             '"Renderable":{' + rend_obj + '},'
             '"Transform":{' + transform_obj + '}}')

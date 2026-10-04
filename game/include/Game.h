@@ -3,6 +3,8 @@
 #include "Engine.h"
 #include "InputManager.h"
 #include "GravitySystem.h"
+#include "GravityCenterDataModule.h"
+#include "GravitationalLensDataModule.h"
 
 class Game {
 public:
@@ -26,6 +28,8 @@ private:
 	void UpdateUIHover();
 
 	GravitySystem gravity;
+	GravityCenterDataModule gravity_center_data;
+	GravitationalLensDataModule gravitational_lens_data;
 
 	float width;
 	float height;

@@ -22,6 +22,8 @@
 #include "GameComponents.h"   // игровые компоненты: объявление + своя регистрация в реестре
 #include "GravityScene.h"
 #include "SandboxScene.h"
+#include "GameUpdateSet.h"
+#include "GravitationalLensPassSet.h"
 
 // Стартовая сцена: имя ОДНО и то же для ECS и для файлов — папка сцены зовётся так же
 // (saved_scene/scene1, см. kScenesRoot). Литерал в одном месте: разъедься имя сцены с именем
@@ -67,7 +69,10 @@ SDL_AppResult Game::MainInit()
 	ctx->CreateFont("default", "fonts/cuyabra-Regular.otf", 48.0f);
 
     // Push/dispatch своих sp — ДО первого LoadScene: реестр ShaderManager вешает их на sp сам.
-    GameShaderSet::RegisterShaderFuncs(ctx);
+    GameShaderSet::RegisterShaderFuncs(ctx, &gravity_center_data);
+    GameUpdateSet::SetGravityCentersUpdater(ctx, &gravity_center_data);
+    GameUpdateSet::SetGravitationalLensUpdater(ctx, &gravitational_lens_data);
+    GravitationalLensPassSet::SetPasses(ctx, safe_f_u32(width), safe_f_u32(height), &gravitational_lens_data);
 
 	// UI-материал (тип UI: bg/text цвета, albedo=default_albedo). Программу "UI" создаёт движок
 	// (InitDefaultShaders) — к MainInit она уже есть.
@@ -87,7 +92,7 @@ SDL_AppResult Game::MainInit()
     ctx->RegisterSceneGenerator(kSandboxScene, [this] { SandboxScene::CreateModels(ctx); });
     ctx->RegisterSceneDestructor(kSandboxScene, [this] { SandboxScene::DeleteModels(ctx); });
     ctx->RegisterSceneGenerator(kSandboxScene, [this] { SandboxScene::CreateDebugColliders(ctx, kSandboxScene); });
-    ctx->RegisterSceneGenerator(kSandboxScene, [this] { SandboxScene::BuildUI(ctx); });
+    //ctx->RegisterSceneGenerator(kSandboxScene, [this] { SandboxScene::BuildUI(ctx); });
 
     ctx->LoadScene(kStartScene);
 

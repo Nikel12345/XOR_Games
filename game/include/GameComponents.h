@@ -49,6 +49,11 @@ struct GravityWorldComponent {
     float jet_return_distance = 2500.0f;
 };
 
+struct GravitationalLensComponent {
+    float schwarzschild_radius = 10.0f;
+    float inner_radius = 0.0f;
+};
+
 // Звать ОДИН раз на старте игры и обязательно ДО первой загрузки сцены: LoadScene резолвит
 // компоненты по имени через реестр, незарегистрированный ключ в файле молча пропускается.
 // Только на старте: specs_ — вектор, поздняя регистрация переаллоцирует его и протухнут

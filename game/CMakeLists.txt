@@ -5,6 +5,10 @@ target_sources(Game PRIVATE
     src/Game.cpp
     src/GravityScene.cpp
     src/GravitySystem.cpp
+    src/GravitationalLensPassSet.cpp
+    src/GravitationalLensDataModule.cpp
+    src/GravityCenterDataModule.cpp
+    src/GameUpdateSet.cpp
     src/SandboxScene.cpp
     src/GameShaderSet.cpp
     src/GameComponents.cpp

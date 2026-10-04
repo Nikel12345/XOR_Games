@@ -6,7 +6,12 @@
             "path": "shaders/building_surface.hlsl"
         }
     ],
-    "compute_shaders": [],
+    "compute_shaders": [
+        {
+            "name": "gravitational_lens_cs",
+            "path": "shaders/gravitational_lens.comp.hlsl"
+        }
+    ],
     "render_shader_programs": [
         {
             "name": "LitTiled",
@@ -88,5 +93,36 @@
             }
         }
     ],
-    "compute_shader_programs": []
+    "compute_shader_programs": [
+        {
+            "name": "gravitational_lens",
+            "cs": "gravitational_lens_cs",
+            "pass": "GravitationalLensPass",
+            "rw_buffers": [],
+            "ro_buffers": [
+                "cameraBuffer",
+                "GravitationalLensBuffer"
+            ],
+            "rw_textures": [
+                {
+                    "atlas": "lensed_scene_color",
+                    "mip": 0,
+                    "layer": 0,
+                    "simultaneous": false
+                },
+                {
+                    "atlas": "lensed_scene_emission",
+                    "mip": 0,
+                    "layer": 0,
+                    "simultaneous": false
+                }
+            ],
+            "ro_textures": [],
+            "samplers": [
+                "scene_hdr",
+                "scene_emission",
+                "env_skybox"
+            ]
+        }
+    ]
 }

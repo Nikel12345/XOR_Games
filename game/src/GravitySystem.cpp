@@ -6,7 +6,6 @@
 #include "PositionStructure.h"
 #include "EngineProfiler.h"
 #include "GameComponents.h"
-#include "GameShaderSet.h"
 
 // Гравитация центров, ЗАДАННЫХ СЦЕНОЙ: притягивает не безымянная константа, а сущность с
 // GravityComponent — центр там, где её Transform, сила = её gm (см. BaseComponents.h). Центров
@@ -54,17 +53,6 @@ void GravitySystem::SimulateGravity(ObjectManager* om, SceneData* scene, float s
         gravity_sources.push_back({ P.w[i], P.d[i], P.h[i], G.gm, G.id,
                                     std::max(G.core_radius * G.core_radius, kGravSoft2) });
     });
-
-    {
-        float centers[GameShaderSet::MAX_GRAVITY_CENTERS][3];
-        const size_t n = std::min(gravity_sources.size(), GameShaderSet::MAX_GRAVITY_CENTERS);
-        for (size_t k = 0; k < n; ++k) {
-            centers[k][0] = gravity_sources[k].x;
-            centers[k][1] = gravity_sources[k].y;
-            centers[k][2] = gravity_sources[k].z;
-        }
-        GameShaderSet::PublishGravityCenters(centers, n);
-    }
 
     // Проход 2 — притягиваемые: сначала скорость по каждому источнику, потом интеграция позиций.
     // Два отдельных цикла без ветвлений и с колонками в локальных __restrict — только в такой

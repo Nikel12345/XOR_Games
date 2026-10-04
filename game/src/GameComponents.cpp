@@ -25,4 +25,9 @@ void RegisterGameComponents()
         .add_default = AddDefaultAoS<GravityWorldComponent>,
         .fields = { FieldSpec::Num("sim_dt", F32, AOS_NUM(GravityWorldComponent, sim_dt), 0, FLT_MAX, 0.001f),
                     FieldSpec::Num("jet_return_distance", F32, AOS_NUM(GravityWorldComponent, jet_return_distance), 0, FLT_MAX, 1.0f) } });
+
+    reg.Register({ .name = "GravitationalLens", .sig_type = typeid(GravitationalLensComponent),
+        .add_default = AddDefaultAoS<GravitationalLensComponent>,
+        .fields = { FieldSpec::Num("schwarzschild_radius", F32, AOS_NUM(GravitationalLensComponent, schwarzschild_radius), 0, FLT_MAX, 0.1f),
+                    FieldSpec::Num("inner_radius", F32, AOS_NUM(GravitationalLensComponent, inner_radius), 0, FLT_MAX, 0.1f) } });
 }
