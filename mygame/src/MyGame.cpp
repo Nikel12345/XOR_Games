@@ -80,7 +80,7 @@ SDL_AppResult MyGame::MainInit()
     FractalShaderSet::RegisterShaderFuncs(ctx);
 
     objectManager->CreateScene(scene_name);
-    ctx->LoadScene(scene_name);   // папка сцены saved_scene/<имя> (scene.json + ресурсы)
+    ctx->LoadScene(scene_name);   // папка сцены saved_scene/<имя> (scene.sheaf + ресурсы)
 
     // ── Якорённые кубы (этапы 3-4). Модель — процедурный куб полу-размера 1, CodeOwned;
     // материал/sp — из манифестов сцены (iron_block/AnchorObject: штатный main-суржейс — свет

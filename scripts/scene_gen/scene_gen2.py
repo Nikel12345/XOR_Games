@@ -16,24 +16,16 @@ GRAVITY_CORE_RADIUS: внутри него притяжение линейно �
 тянет, а ушедший дальше JET_RANGE куб игра возвращает в его центр с той же скоростью
 (GravitySystem.cpp::ReturnJets).
 
-Сцена теперь — ПАПКА: scene.json (ECS) + рядом манифесты ресурсов
+Сцена — ПАПКА: scene.sheaf (объекты) + рядом json-манифесты ресурсов
 (materials.json / textures.json / models.json / shaders.json). Этот скрипт пишет
-ТОЛЬКО scene.json — сами объекты. Материалы/текстуры/модели/шейдеры уже приходят
+ТОЛЬКО scene.sheaf — сами объекты. Материалы/текстуры/модели/шейдеры уже приходят
 из инита игры и остальных манифестов папки — скрипт лишь ссылается на них по имени.
 
-Формат scene.json (см. ObjectManager::SaveScene / ComponentSpec::Save):
-    { "materials": [имена], "models": [имена],
-      "<архетип>": { "count": N, "entities": [...], "<Компонент>": { "<поле>": [колонка] } } }
-Ключ архетипа = ОТСОРТИРОВАННЫЕ по алфавиту имена компонентов через запятую; в ТОМ ЖЕ
-порядке идут блоки компонентов внутри — так пишет движок, иначе пересохранение сцены
-из редактора переставит их и даст пустой дифф на весь файл.
-Внутри каждый компонент — КОЛОНКИ по полям (SoA-стиль): значение i-й сущности лежит
-в i-й позиции каждой колонки. Все кубы делят ОДИН архетип → один компактный блок.
-
-Имена ассетов лежат в СЛОВАРЯХ в шапке файла ("models"/"materials"), а колонки
-Renderable.models и Renderable.materials хранят ИНДЕКС в них: на миллионе кубов десяток имён иначе повторяется миллион
-раз. Движок принимает в ячейке и строку («имя как есть»), но пишем индексами — ради этого
-словарь и заводился (см. ScenePool в ComponentSerializer.h).
+scene.sheaf — бинарный формат Sheaf (docs/sheaf.md движка): таблица на архетип, колонка на поле
+компонента, имена ассетов — строками, которые файл хранит по одному разу. Пишет его писатель
+движка src/sheaf/sheaf.py. Таблицы идут по ключу архетипа (имена компонентов по алфавиту через
+запятую), компоненты внутри — тоже по алфавиту: так пишет SaveScene движка, иначе пересохранение
+сцены из редактора переставит таблицы. Все кубы делят ОДИН архетип → одна таблица.
 
 Сцена набирается из СЕКЦИЙ (SECTIONS). Секция — ШАРОВОЙ СЛОЙ: кубы сыплются туда, где
 inner_radius <= |(x,y,z)| <= outer_radius, но слой развёрнут по меридиану не целиком, а до
@@ -42,8 +34,7 @@ fill = 1 — законченный шар с шаровым же вырезом
 у которого с уходом по Y оба радиуса, внешний и внутренний, сжимаются по меридиану.
 Поэтому |y| никогда не превысит outer_radius, а сам fill — величина безразмерная.
 Разные секции = разные радиусы и своя завершённость, всё остальное общее. Пишутся они в
-ОДИН scene.json: у всех секций одинаковый состав компонентов, значит один блок архетипа,
-сквозная нумерация сущностей и общие словари имён.
+одну таблицу scene.sheaf: у всех секций одинаковый состав компонентов.
 
 Ось Y — полноценная: орбитальная скорость считается по ПОЛНОМУ радиусу |(x,y,z)|, а не по
 проекции на XZ, поэтому куб с ненулевой высотой летит по наклонной круговой орбите, а не
@@ -57,7 +48,7 @@ fill = 1 — законченный шар с шаровым же вырезом
 Запуск (без параметров):
     python scene_gen2.py      (или: py scene_gen2.py)
 
-Результат пишется СРАЗУ в папку сцены игры: game/saved_scene/scene1M/scene.json
+Результат пишется СРАЗУ в папку сцены игры: game/saved_scene/scene1M/scene.sheaf
 (движок грузит папку "saved_scene/<имя сцены>" из рабочей папки game, см. Game::MainInit →
 ctx->LoadScene("scene1")). Прочие манифесты в папке не трогаются.
 """
@@ -65,7 +56,13 @@ ctx->LoadScene("scene1")). Прочие манифесты в папке не т
 import os
 import math
 import random
+import sys
 from collections import namedtuple
+
+# Писатель формата лежит в движке (src/sheaf/sheaf.py), а движок — каталог над games, как
+# XOR_ENGINE_DIR в games/CMakeLists.txt.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "src", "sheaf"))
+import sheaf  # noqa: E402
 
 # ============================================================================
 #  ПАРАМЕТРЫ ГЕНЕРАЦИИ  (правь здесь)
@@ -192,7 +189,7 @@ LIGHT_CASCADE_RATIO = 3.0
 # Папка сцены игры (относительно скрипта) и имя ECS-файла внутри неё. Сцена — это
 # подпапка корня сцен по её имени (saved_scene/<имя>), а не сам saved_scene.
 SCENE_DIR = os.path.join("..", "..", "game", "saved_scene", "scene1M")
-OUTPUT_NAME = "scene.json"
+OUTPUT_NAME = "scene.sheaf"
 
 # Имена 16 колонок Transform (row-major 4x4; трансляция в w/d/h — индексы 3/7/11).
 # Порядок = порядок полей в ComponentSerializer.cpp (реестр Transform).
@@ -232,11 +229,6 @@ def make_transform(pos, rot3x3, scale):
         m[2][0], m[2][1], m[2][2], z,
         0.0,     0.0,     0.0,     1.0,
     ]
-
-
-def _fmt(v):
-    # %.7g — точность float32 (как SaveTransform движка) и компактный, но валидный JSON-номер.
-    return format(v, ".7g")
 
 
 # ============================================================================
@@ -331,46 +323,95 @@ def jet_direction(axis_sign):
 
 
 # ============================================================================
-#  Сериализация scene.json (архетип-колоночный формат)
+#  Сериализация scene.sheaf
 # ============================================================================
-def _num_col(key, values):
-    """'"key":[v0,v1,...]' — числовая колонка из уже отформатированных строк."""
-    return '"{}":[{}]'.format(key, ",".join(values))
+MAX_LOD = 4   # колонки mat_lod0..mat_lod3 (MAX_LOD в BaseComponents.h)
+
+# Дефолт Transform — единичная матрица, как у PositionProxy16 в BaseComponents.h.
+TRANSFORM_DEFAULT = [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
 
 
-class _Pool:
-    # Словарь имён одного вида ассета — то же, что ScenePool::List в движке.
-    # Индекс выдаётся по первому появлению имени, поэтому неиспользованных записей в списке
-    # не будет: сколько имён реально роздано кубам, столько и попадёт в файл.
+def _add_transform(t, columns):
+    c = t.component("Transform")
+    for k in range(16):
+        c.field(TRANSFORM_COLS[k], sheaf.F32, columns[k], default=TRANSFORM_DEFAULT[k])
 
-    def __init__(self):
-        self.names = []
-        self._index = {}
 
-    def intern(self, name):
-        i = self._index.get(name)
-        if i is None:
-            i = len(self.names)
-            self._index[name] = i
-            self.names.append(name)
-        return i
+def _add_renderable(t, models, lods):
+    """Renderable в той раскладке, что пишет движок (MakeSaveRenderable в Engine.cpp): у объекта
+    одна часть, lods[i] — её материалы по уровням."""
+    n = len(models)
+    c = t.component("Renderable")
+    c.field("visible", sheaf.BOOL, [True] * n, default=True)
+    c.field("alpha", sheaf.F32, [1.0] * n, default=1.0)
+    c.field("flags", sheaf.U32, [0] * n)
+    c.field("model", sheaf.STR, models)
+    for L in range(MAX_LOD):
+        col = [[row[L] if L < len(row) else None] for row in lods]
+        # mat_lod0 — всегда: по длинам его списков движок узнаёт число частей объекта.
+        if L == 0 or any(cell[0] is not None for cell in col):
+            c.field("mat_lod%d" % L, sheaf.STR, col, flags=sheaf.LIST | sheaf.NULLABLE)
 
-    def json(self, key):
-        return '"{}":[{}]'.format(key, ",".join('"{}"'.format(n) for n in self.names))
+
+def _add_velocity(t, vx, vy, vz):
+    c = t.component("Velocity")
+    c.field("x", sheaf.F32, vx)
+    c.field("y", sheaf.F32, vy)
+    c.field("z", sheaf.F32, vz)
+
+
+def _single(w, *components):
+    """Таблица из одного объекта. components — пары (имя, [(поле, тип, значение), ...]) или
+    готовые функции t -> None (Renderable/Transform), по алфавиту имён."""
+    t = w.table(1)
+    for comp in components:
+        if callable(comp):
+            comp(t)
+            continue
+        name, fields = comp
+        c = t.component(name)
+        for field, type_, value in fields:
+            c.field(field, type_, [value])
+    return t
+
+
+def _light_table(w):
+    """DirectLight,ShadowCaster: один объект."""
+    dx, dy, dz = DIRECT_LIGHT_DIR
+    r, g, b = DIRECT_LIGHT_COLOR
+    he = max(sec.outer_radius for sec in SECTIONS)   # шаровой слой целиком влезает в этот радиус
+    F = sheaf.F32
+    _single(w, ("DirectLight", [
+        ("dir_x", F, dx), ("dir_y", F, dy), ("dir_z", F, dz),
+        ("r", F, r), ("g", F, g), ("b", F, b),
+        ("power", F, DIRECT_LIGHT_POWER),
+        ("center_x", F, 0.0), ("center_y", F, 0.0), ("center_z", F, 0.0),
+        ("half_extent", F, he), ("half_depth", F, he),
+        ("cascade_count", sheaf.U32, int(LIGHT_CASCADE_COUNT)),
+        ("cascade_ratio", F, LIGHT_CASCADE_RATIO),
+    ]), ("ShadowCaster", []))
+
+
+def _center_transform():
+    ident = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+    m = make_transform(GRAVITY_CENTER_POS, ident, GRAVITY_CENTER_SCALE)
+    return lambda t: _add_transform(t, [[v] for v in m])
+
+
+def _center_renderable():
+    return lambda t: _add_renderable(t, [GRAVITY_CENTER_MODEL], [[GRAVITY_CENTER_MATERIAL]])
 
 
 class _Columns:
-    # Колонки сцены (SoA) и словари имён — ОБЩИЕ на все секции: секции не отдельные блоки
-    # файла, а порции строк в одном блоке архетипа (состав компонентов у них одинаковый).
+    # Колонки одного архетипа (SoA): значение i-го куба лежит в i-й позиции каждой колонки.
+    # Секции — не отдельные таблицы, а порции строк одной: состав компонентов у них одинаковый.
 
     def __init__(self):
         self.transform = [[] for _ in range(16)]
         self.model = []
-        self.material = []
+        self.lods = []         # материалы единственной части куба по уровням
         self.vx, self.vy, self.vz = [], [], []
         self.jet_center = []   # только у колонок джетов: Jet.center
-        self.models = _Pool()
-        self.materials = _Pool()
 
     def count(self):
         return len(self.model)
@@ -379,10 +420,8 @@ class _Columns:
 def emit_section(section, cols):
     """Досыпает кубы одной секции в общие колонки cols.
 
-    Это ровно прежняя логика генерации, вынесенная в функцию: единственное, что меняется от
-    секции к секции, — радиусы и высота области. Ни id, ни словари здесь не трогаются: id
-    раздаются одним диапазоном в build_scene по итоговой длине колонок, а имена интернируются
-    в общие _Pool — поэтому вторая и третья секции ничего не ломают у первой.
+    Единственное, что меняется от секции к секции, — радиусы и высота области; строки всех
+    секций идут подряд в одну таблицу.
     """
     for _ in range(section.count):
         pos = sample_point(section.inner_radius, section.outer_radius, section.fill)
@@ -390,18 +429,16 @@ def emit_section(section, cols):
         scale = random.uniform(CUBE_SCALE_MIN, CUBE_SCALE_MAX)
         transform = make_transform(pos, rot, scale)
         for k in range(16):
-            cols.transform[k].append(_fmt(transform[k]))
+            cols.transform[k].append(transform[k])
 
-        cols.model.append(str(cols.models.intern(random.choice(CUBE_MODELS))))
-
-        # jagged: один материал на куб, в ячейке — индекс в словаре materials
+        cols.model.append(random.choice(CUBE_MODELS))
         mat = random.choice(CUBE_MATERIALS)
-        cols.material.append('[[{}]]'.format(','.join(str(cols.materials.intern(mat + s)) for s in CUBE_LEVEL_SUFFIXES)))
+        cols.lods.append([mat + s for s in CUBE_LEVEL_SUFFIXES])
 
         vx, vy, vz = orbital_velocity(pos)
-        cols.vx.append(_fmt(vx))
-        cols.vy.append(_fmt(vy))
-        cols.vz.append(_fmt(vz))
+        cols.vx.append(vx)
+        cols.vy.append(vy)
+        cols.vz.append(vz)
 
 
 def emit_jets(center_pos, center_id, cols):
@@ -409,7 +446,7 @@ def emit_jets(center_pos, center_id, cols):
     кубов джета другой архетип). Конусы чередуются через куб — делятся поровну. center_id
     уходит в Jet.center — по нему игра находит центр куба."""
     cx, cy, cz = center_pos
-    mat_row = '[[{}]]'.format(','.join(str(cols.materials.intern(JET_MATERIAL + s)) for s in CUBE_LEVEL_SUFFIXES))
+    lods = [JET_MATERIAL + s for s in CUBE_LEVEL_SUFFIXES]
     for i in range(JET_COUNT):
         dx, dy, dz = jet_direction(1.0 if i % 2 == 0 else -1.0)
         t = random.uniform(0.0, JET_RANGE)
@@ -418,19 +455,20 @@ def emit_jets(center_pos, center_id, cols):
         scale = random.uniform(CUBE_SCALE_MIN, CUBE_SCALE_MAX)
         transform = make_transform(pos, random_rotation(), scale)
         for k in range(16):
-            cols.transform[k].append(_fmt(transform[k]))
+            cols.transform[k].append(transform[k])
 
-        cols.model.append(str(cols.models.intern(random.choice(CUBE_MODELS))))
-        cols.material.append(mat_row)
+        cols.model.append(random.choice(CUBE_MODELS))
+        cols.lods.append(lods)
 
-        cols.vx.append(_fmt(dx * JET_SPEED))
-        cols.vy.append(_fmt(dy * JET_SPEED))
-        cols.vz.append(_fmt(dz * JET_SPEED))
-        cols.jet_center.append(str(center_id))
+        cols.vx.append(dx * JET_SPEED)
+        cols.vy.append(dy * JET_SPEED)
+        cols.vz.append(dz * JET_SPEED)
+        cols.jet_center.append(center_id)
 
 
 # Ключи архетипов = отсортированные по алфавиту имена компонентов через запятую (так их строит
-# SaveScene движка). Держим их константами: по ним же определяется порядок блоков в файле.
+# SaveScene движка). По ним же определяется порядок таблиц в файле.
+LIGHT_ARCHETYPE = "DirectLight,ShadowCaster"
 CUBES_ARCHETYPE = "Renderable,Shadow,Transform,Velocity"
 CENTER_ARCHETYPE = "GravitationalLens,Gravity,Renderable,Transform"
 JETS_ARCHETYPE = "Jet,Renderable,Transform,Velocity"
@@ -438,68 +476,38 @@ SKYBOX_ARCHETYPE = "Renderable"
 GRAVITY_WORLD_ARCHETYPE = "GravityWorld"
 
 
-def _renderable_obj(n, model_cells, material_rows):
-    """Тело Renderable. model_cells — индексы моделей строками, material_rows — строки-массивы частей
-    '[[L0, L1, ...], ...]' (по списку материалов уровней на часть)."""
-    return ",".join([
-        _num_col("visible", ["true"] * n),
-        _num_col("alpha", ["1"] * n),
-        _num_col("flags", ["0"] * n),
-        _num_col("model", model_cells),
-        _num_col("materials", material_rows),
-    ])
+def _cubes_table(w, cols):
+    t = w.table(cols.count())
+    _add_renderable(t, cols.model, cols.lods)
+    t.component("Shadow")
+    _add_transform(t, cols.transform)
+    _add_velocity(t, cols.vx, cols.vy, cols.vz)
 
 
-def _gravity_center_block(entity_id, center_id, cols):
-    """Сама сущность-центр (одна штука).
-
-    Имена компонентов идут по алфавиту: тем же порядком их пишет SaveScene движка, так что
-    пересохранение сцены из редактора не переставляет ключи в файле.
-    """
-    ident = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
-    transform = make_transform(GRAVITY_CENTER_POS, ident, GRAVITY_CENTER_SCALE)
-    transform_obj = ",".join(_num_col(TRANSFORM_COLS[k], [_fmt(transform[k])]) for k in range(16))
-    gravity_obj = ",".join([_num_col("gm", [_fmt(GM)]), _num_col("id", [str(center_id)]),
-                            _num_col("core_radius", [_fmt(GRAVITY_CORE_RADIUS)])])
-    rend_obj = _renderable_obj(1, [str(cols.models.intern(GRAVITY_CENTER_MODEL))],
-                               ['[[' + str(cols.materials.intern(GRAVITY_CENTER_MATERIAL)) + ']]'])
-    lens_obj = ",".join([_num_col("schwarzschild_radius", [_fmt(GRAVITY_CENTER_SCHWARZSCHILD_RADIUS)]),
-                         _num_col("inner_radius", [_fmt(GRAVITY_CENTER_SCALE)])])
-    return ('"' + CENTER_ARCHETYPE + '":{'
-            '"count":1,'
-            '"entities":[' + str(entity_id) + '],'
-            '"GravitationalLens":{' + lens_obj + '},'
-            '"Gravity":{' + gravity_obj + '},'
-            '"Renderable":{' + rend_obj + '},'
-            '"Transform":{' + transform_obj + '}}')
+def _jets_table(w, cols):
+    t = w.table(cols.count())
+    t.component("Jet").field("center", sheaf.U32, cols.jet_center)
+    _add_renderable(t, cols.model, cols.lods)
+    _add_transform(t, cols.transform)
+    _add_velocity(t, cols.vx, cols.vy, cols.vz)
 
 
-def _light_block():
-    """Блок архетипа DirectLight,ShadowCaster (одна сущность, id 0)."""
-    dx, dy, dz = DIRECT_LIGHT_DIR
-    r, g, b = DIRECT_LIGHT_COLOR
-    he = _fmt(max(sec.outer_radius for sec in SECTIONS))   # шаровой слой целиком влезает в этот радиус
-    dl = ",".join([
-        _num_col("dir_x", [_fmt(dx)]), _num_col("dir_y", [_fmt(dy)]), _num_col("dir_z", [_fmt(dz)]),
-        _num_col("r", [_fmt(r)]), _num_col("g", [_fmt(g)]), _num_col("b", [_fmt(b)]),
-        _num_col("power", [_fmt(DIRECT_LIGHT_POWER)]),
-        _num_col("center_x", ["0"]), _num_col("center_y", ["0"]), _num_col("center_z", ["0"]),
-        _num_col("half_extent", [he]), _num_col("half_depth", [he]),
-        _num_col("cascade_count", [str(int(LIGHT_CASCADE_COUNT))]),
-        _num_col("cascade_ratio", [_fmt(LIGHT_CASCADE_RATIO)]),
-    ])
-    return ('"DirectLight,ShadowCaster":{'
-            '"count":1,"entities":[0],'
-            '"DirectLight":{' + dl + '},'
-            '"ShadowCaster":{}}')
+def _center_table(w, center_id):
+    """Сама сущность-центр (одна штука)."""
+    F = sheaf.F32
+    _single(w,
+            ("GravitationalLens", [("schwarzschild_radius", F, GRAVITY_CENTER_SCHWARZSCHILD_RADIUS),
+                                   ("inner_radius", F, GRAVITY_CENTER_SCALE)]),
+            ("Gravity", [("gm", F, GM), ("id", sheaf.U32, center_id), ("core_radius", F, GRAVITY_CORE_RADIUS)]),
+            _center_renderable(), _center_transform())
 
 
-def _gravity_world_block(entity_id):
-    world_obj = ",".join([_num_col("sim_dt", [_fmt(SIM_DT)]), _num_col("jet_return_distance", [_fmt(JET_RANGE)])])
-    return ('"' + GRAVITY_WORLD_ARCHETYPE + '":{'
-            '"count":1,'
-            '"entities":[' + str(entity_id) + '],'
-            '"GravityWorld":{' + world_obj + '}}')
+def _skybox_table(w):
+    _single(w, lambda t: _add_renderable(t, [SKYBOX_MODEL], [[SKYBOX_MATERIAL]]))
+
+
+def _gravity_world_table(w):
+    _single(w, ("GravityWorld", [("sim_dt", sheaf.F32, SIM_DT), ("jet_return_distance", sheaf.F32, JET_RANGE)]))
 
 
 def resolved_sections():
@@ -529,88 +537,26 @@ def build_scene():
         emit_section(sec, cols)
 
     # Джеты — ПОСЛЕ секций: тогда правка JET_* не сдвигает случайную последовательность секций
-    # и раскладка диска от неё не меняется. Колонки свои (другой архетип), словари имён — общие.
+    # и раскладка диска от неё не меняется.
     jet_cols = _Columns()
-    jet_cols.models, jet_cols.materials = cols.models, cols.materials
     # id центра = его номер в списке: у каждого центра свой, по нему джеты ссылаются на центр.
     centers = [GRAVITY_CENTER_POS]
     for center_id, center_pos in enumerate(centers):
         emit_jets(center_pos, center_id, jet_cols)
-
-    n = cols.count()
     n_jets = jet_cols.count()
 
-    # Блоки идут ПО КЛЮЧУ АРХЕТИПА, и id раздаются в том же порядке. Это не косметика: движок
-    # в SaveScene сортирует блоки по ключу, а LoadScene нумерует сущности по порядку блоков в
-    # файле. Совпасть с этим порядком здесь — значит выдать канонический файл, который первое
-    # же пересохранение из редактора не переставит и в котором не поедут id.
-    next_id = 1 if EMIT_DIRECT_LIGHT else 0   # свет, если включён, занимает id 0
-    center_id = cubes_base = jets_base = skybox_id = world_id = 0
-    for key in sorted([CENTER_ARCHETYPE, CUBES_ARCHETYPE, JETS_ARCHETYPE, SKYBOX_ARCHETYPE, GRAVITY_WORLD_ARCHETYPE]):
-        if key == CENTER_ARCHETYPE:
-            center_id = next_id
-            next_id += 1
-        elif key == GRAVITY_WORLD_ARCHETYPE:
-            world_id = next_id
-            next_id += 1
-        elif key == SKYBOX_ARCHETYPE:
-            skybox_id = next_id
-            next_id += 1
-        elif key == JETS_ARCHETYPE:
-            jets_base = next_id
-            next_id += n_jets
-        else:
-            cubes_base = next_id
-            next_id += n
-
-    ids = ",".join(str(cubes_base + i) for i in range(n))
-
-    transform_obj = ",".join(_num_col(TRANSFORM_COLS[k], cols.transform[k]) for k in range(16))
-    velocity_obj = ",".join([_num_col("x", cols.vx), _num_col("y", cols.vy), _num_col("z", cols.vz)])
-    rend_obj = _renderable_obj(n, cols.model, cols.material)
-
-    cubes_block = ('"' + CUBES_ARCHETYPE + '":{'
-                   '"count":' + str(n) + ','
-                   '"entities":[' + ids + '],'
-                   '"Renderable":{' + rend_obj + '},'
-                   '"Shadow":{},'
-                   '"Transform":{' + transform_obj + '},'
-                   '"Velocity":{' + velocity_obj + '}}')
-
-    jet_ids = ",".join(str(jets_base + i) for i in range(n_jets))
-    jet_transform_obj = ",".join(_num_col(TRANSFORM_COLS[k], jet_cols.transform[k]) for k in range(16))
-    jet_velocity_obj = ",".join([_num_col("x", jet_cols.vx), _num_col("y", jet_cols.vy), _num_col("z", jet_cols.vz)])
-    jets_block = ('"' + JETS_ARCHETYPE + '":{'
-                  '"count":' + str(n_jets) + ','
-                  '"entities":[' + jet_ids + '],'
-                  '"Jet":{' + _num_col("center", jet_cols.jet_center) + '},'
-                  '"Renderable":{' + _renderable_obj(n_jets, jet_cols.model, jet_cols.material) + '},'
-                  '"Transform":{' + jet_transform_obj + '},'
-                  '"Velocity":{' + jet_velocity_obj + '}}')
-
-    # Центр и скайбокс строим ДО сборки шапки: они интернируют свои имена ассетов в те же словари, а они
-    # уходят в файл первыми.
-    center_block = _gravity_center_block(center_id, 0, cols)   # единственный центр = centers[0]
-    skybox_block = ('"' + SKYBOX_ARCHETYPE + '":{'
-                    '"count":1,'
-                    '"entities":[' + str(skybox_id) + '],'
-                    '"Renderable":{' + _renderable_obj(1, [str(cols.models.intern(SKYBOX_MODEL))],
-                                                       ['[[' + str(cols.materials.intern(SKYBOX_MATERIAL)) + ']]']) + '}}')
-
-    # Словари — ПЕРВЫМИ: колонки ассетов ссылаются в них индексами. Порядок списков как у
-    # движка (std::map → по алфавиту), чтобы пересохранение не переставляло шапку.
-    blocks = [cols.materials.json("materials"), cols.models.json("models")]
-    # if EMIT_DIRECT_LIGHT:
-    #     blocks.append(_light_block())
-    by_key = {CENTER_ARCHETYPE: center_block, CUBES_ARCHETYPE: cubes_block, SKYBOX_ARCHETYPE: skybox_block,
-              GRAVITY_WORLD_ARCHETYPE: _gravity_world_block(world_id)}
+    w = sheaf.Writer()
+    tables = {CENTER_ARCHETYPE: lambda: _center_table(w, 0),   # единственный центр = centers[0]
+              CUBES_ARCHETYPE: lambda: _cubes_table(w, cols),
+              SKYBOX_ARCHETYPE: lambda: _skybox_table(w),
+              GRAVITY_WORLD_ARCHETYPE: lambda: _gravity_world_table(w)}
     if n_jets:
-        by_key[JETS_ARCHETYPE] = jets_block
-    for key in sorted(by_key):
-        blocks.append(by_key[key])
-
-    text = "{\n" + ",\n".join(blocks) + "\n}\n"
-    return text, cols.models.names, sections, n_jets
+        tables[JETS_ARCHETYPE] = lambda: _jets_table(w, jet_cols)
+    if EMIT_DIRECT_LIGHT:
+        tables[LIGHT_ARCHETYPE] = lambda: _light_table(w)
+    for key in sorted(tables):
+        tables[key]()
+    return w.finish(), set(cols.model), sections, n_jets
 
 
 def main():
@@ -621,10 +567,10 @@ def main():
     if not os.path.isdir(out_dir):
         raise SystemExit("Папки сцены нет: {}\n(ожидается game/saved_scene/scene1M с манифестами ресурсов)".format(out_dir))
 
-    text, used_models, sections, n_jets = build_scene()
+    data, used_models, sections, n_jets = build_scene()
 
-    with open(out_path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(text)
+    with open(out_path, "wb") as f:
+        f.write(data)
 
     total = sum(sec.count for sec in sections)
     print("OK: {} кубов в {} секц. -> {}".format(total, len(sections), out_path))
@@ -640,7 +586,7 @@ def main():
             SPIRAL_ARMS, SPIRAL_PITCH_DEG, SPIRAL_ARM_WIDTH, GRAVITY_CORE_RADIUS, period / SIM_DT))
     print("Джеты: {} кубов ({} на центр), конус +/-{:g} град., скорость {:g}, возврат дальше {:g}".format(
         n_jets, JET_COUNT, JET_SPREAD_DEG, JET_SPEED, JET_RANGE))
-    print("Свет (entity 0): {}".format("да" if EMIT_DIRECT_LIGHT else "нет"))
+    print("Свет: {}".format("да" if EMIT_DIRECT_LIGHT else "нет"))
     print("Использовано моделей: {} из {} (cube_0..cube_{}).".format(
         len(used_models), NUM_CUBE_MODELS, NUM_CUBE_MODELS - 1))
     print("Проверь: kCubeVariants в GravityScene.cpp == NUM_CUBE_MODELS ({}), "

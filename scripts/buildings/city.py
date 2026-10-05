@@ -4,7 +4,7 @@
 Запуск без параметров, файл перезаписывается. Набор моделей берётся из generate.py (MODEL_NAME/
 MODEL_COUNT) — единственный источник правды о том, сколько вариантов существует.
 
-Сцена собирается ЦЕЛИКОМ здесь, без чтения чужого scene.json: свет и скайбокс — литералы ниже.
+Сцена собирается ЦЕЛИКОМ здесь, без чтения чужого scene.sheaf: свет и скайбокс — литералы ниже.
 Иначе скрипт нельзя запустить дважды — первый прогон подменяет базовую сцену городом, и второй
 затягивает её пулы обратно в себя, задваивая списки.
 """
@@ -15,10 +15,15 @@ import math
 import re
 import struct
 import random
+import sys
 import collections
 from bisect import bisect_right
 from pathlib import Path
 
+# Писатель формата лежит в движке (src/sheaf/sheaf.py), а движок — каталог над games, как
+# XOR_ENGINE_DIR в games/CMakeLists.txt.
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src" / "sheaf"))
+import sheaf  # noqa: E402
 from generate import MODEL_NAME, MODEL_COUNT, GRID, CELL, OUT_DIR, SUBMESH_SLOTS
 
 CITY_X = 100                 # домов по X
@@ -41,7 +46,7 @@ AVENUE_Y = 1
 # saved_scene/<имя сцены>, а не сам saved_scene (см. Engine::LoadScene).
 GAME_DIR = Path(__file__).resolve().parents[2] / "game"
 SCENE_DIR = GAME_DIR / "saved_scene" / "scene1"
-SCENE_NAME = "scene.json"
+SCENE_NAME = "scene.sheaf"
 
 # По материалу на сабмеш, порядок соответствует НОМЕРАМ сабмешей (wall, podium, tech, windows):
 # движок берёт материал по номеру, а не по позиции в списке. Список ОБЯЗАН покрывать все слоты
@@ -64,8 +69,9 @@ LIGHT = collections.OrderedDict([
     ("cascade_count", 4), ("cascade_ratio", 3.15),
 ])
 
-BUILDING_ARCHETYPE = "Renderable,Transform"
 MAT4_KEYS = ("x", "y", "z", "w", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l")
+# Дефолт Transform — единичная матрица, как у PositionProxy16 в BaseComponents.h.
+MAT4_DEFAULT = (1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0)
 
 
 # Уровень 1 дома — та же модель без деталей. Порог — экранный РАДИУС дома (не детали), px.
@@ -145,28 +151,24 @@ def city_grid(av_x, av_z, rng):
             yield ix, iz, model + 1, quarter, (lx - ox) * SPACING, (lz - oz) * SPACING
 
 
-def renderable(model_col, names, hidden=None):
-    """Компонент Renderable. hidden — части, которых нет на уровне 1 модели; без него уровень один."""
-    count = len(model_col)
-    if hidden is None:
-        materials = [[[n] for n in row] for row in names]
-    else:
-        materials = [[[n, None if k in hidden else n] for k, n in enumerate(row)] for row in names]
-    return collections.OrderedDict([
-        ("visible", [True] * count), ("alpha", [1.0] * count), ("flags", [0] * count),
-        ("model", list(model_col)),
-        ("materials", materials),
-    ])
+def add_renderable(t, models, parts, hidden=None):
+    """Renderable в раскладке движка (MakeSaveRenderable в Engine.cpp). parts[i] — материалы частей
+    объекта i; hidden — номера частей, которых нет на уровне 1 модели; без него уровень один."""
+    count = len(models)
+    c = t.component("Renderable")
+    c.field("visible", sheaf.BOOL, [True] * count, default=True)
+    c.field("alpha", sheaf.F32, [1.0] * count, default=1.0)
+    c.field("flags", sheaf.U32, [0] * count)
+    c.field("model", sheaf.STR, models)
+    c.field("mat_lod0", sheaf.STR, parts, flags=sheaf.LIST | sheaf.NULLABLE)
+    if hidden is not None:
+        c.field("mat_lod1", sheaf.STR, [[None if k in hidden else m for k, m in enumerate(row)] for row in parts],
+                flags=sheaf.LIST | sheaf.NULLABLE)
 
 
 def build_scene(rng):
     models = [MODEL_NAME + str(n + 1) for n in range(MODEL_COUNT)]
-    mats = list(BUILDING_MATERIALS)
-    # Индексы в колонках — позиции в этих списках-словарях шапки (см. ScenePool).
-    sky_mat, sky_model = len(mats), len(models)
-    mats.append(SKYBOX_MATERIAL)
-    models.append(SKYBOX_MODEL)
-    # Индексы материалов — префикс списка: сабмеш адресует материал по НОМЕРУ, поэтому
+    # Номера материалов — префикс списка: сабмеш адресует материал по НОМЕРУ, поэтому
     # обрезать можно только хвост, и ровно до числа сабмешей модели.
     mat_ids = {n: list(range(submesh_count(MODEL_NAME + str(n))))
                for n in range(1, MODEL_COUNT + 1)}
@@ -176,12 +178,11 @@ def build_scene(rng):
     av_x = avenue_gaps(CITY_X, AVENUE_X, rng)
     av_z = avenue_gaps(CITY_Y, AVENUE_Y, rng)
     cells = list(city_grid(av_x, av_z, rng))
-    count = len(cells)
     cols = collections.OrderedDict((k, []) for k in MAT4_KEYS)
-    names, model_col = [], []
+    parts, model_col = [], []
     for _, _, model, quarter, tx, tz in cells:
-        model_col.append(model - 1)
-        names.append(list(mat_ids[model]))
+        model_col.append(models[model - 1])
+        parts.append([BUILDING_MATERIALS[i] for i in mat_ids[model]])
         a = 0.5 * math.pi * quarter
         ca, sa = float(round(math.cos(a))), float(round(math.sin(a)))
         # Матрица row-major, перенос — в четвёртом СТОЛБЦЕ (колонки w/d/h), как её пишет
@@ -193,25 +194,21 @@ def build_scene(rng):
         for key, v in zip(MAT4_KEYS, row):
             cols[key].append(v)
 
-    scene = collections.OrderedDict()
-    scene["materials"] = mats
-    scene["models"] = models
-    scene["DirectLight,ShadowCaster"] = collections.OrderedDict([
-        ("count", 1), ("entities", [0]),
-        ("DirectLight", collections.OrderedDict((k, [v]) for k, v in LIGHT.items())),
-        ("ShadowCaster", {}),
-    ])
-    scene["Renderable"] = collections.OrderedDict([
-        ("count", 1), ("entities", [1]),
-        ("Renderable", renderable([sky_model], [[sky_mat]])),
-    ])
-    scene[BUILDING_ARCHETYPE] = collections.OrderedDict([
-        ("count", count),
-        ("entities", list(range(2, 2 + count))),
-        ("Renderable", renderable(model_col, names, LEVEL1_HIDDEN)),
-        ("Transform", cols),
-    ])
-    return scene, cells, av_x, av_z
+    # Таблицы — по ключу архетипа (имена компонентов по алфавиту через запятую), как их пишет
+    # SaveScene движка: тогда пересохранение из редактора не переставляет таблицы.
+    w = sheaf.Writer()
+    sun = w.table(1)
+    light = sun.component("DirectLight")
+    for k, v in LIGHT.items():
+        light.field(k, sheaf.U32 if isinstance(v, int) else sheaf.F32, [v])
+    sun.component("ShadowCaster")
+    add_renderable(w.table(1), [SKYBOX_MODEL], [[SKYBOX_MATERIAL]])
+    town = w.table(len(cells))
+    add_renderable(town, model_col, parts, LEVEL1_HIDDEN)
+    tr = town.component("Transform")
+    for key, default in zip(MAT4_KEYS, MAT4_DEFAULT):
+        tr.field(key, sheaf.F32, cols[key], default=default)
+    return w.finish(), cells, av_x, av_z
 
 
 def sync_models():
@@ -278,10 +275,9 @@ def sync_models():
 def main():
     rng = random.Random()
     registry = sync_models()
-    scene, cells, av_x, av_z = build_scene(rng)
+    data, cells, av_x, av_z = build_scene(rng)
     out = SCENE_DIR / SCENE_NAME
-    io.open(str(out), "w", encoding="utf-8", newline="\n").write(
-        json.dumps(scene, indent=4, ensure_ascii=False) + "\n")
+    out.write_bytes(data)
 
     per = collections.Counter(c[2] for c in cells)
     grid = {(c[0], c[1]): c[2] for c in cells}
