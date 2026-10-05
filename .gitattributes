@@ -1,0 +1,2 @@
+# .sheaf — бинарный: diff через SheafDump, конфиг docs/sheaf.md «Diff в git» в репо движка
+*.sheaf diff=sheaf

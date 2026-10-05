@@ -18,6 +18,7 @@ set(SANDBOX_SRC
     # src/ClaimWindowProbe.cpp        # зонд: claim окна GPU-девайсом — им найден баг «первого окна» в SDL 3.4 (см. шапку файла)
     # src/main.cpp              # зонд: TDM store под контеншеном памяти
     # src/SceneJsonProbe.cpp    # зонд: round-trip scene.json (раскладка файла + сохранность данных), без GPU
+    # src/SheafProbe.cpp       # зонд: писатель и читатель Sheaf — синтетика всех типов и способов, порча файла, сцена и готовые .sheaf (см. шапку файла)
     # src/BlitUsageProbe.cpp    # зонд: какие usage-флаги требуют blit/copy/mip-gen (см. шапку файла)
     # src/CameraScene.cpp
     # src/BufferScene.cpp
